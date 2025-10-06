@@ -1,0 +1,86 @@
+{{> head title="Dashboard" }}
+{{> sidebar }}
+
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <nav class="text-sm text-gray-600">Home / Dashboard</nav>
+    <h2 class="text-2xl font-semibold text-[#344158]">Dashboard</h2>
+  </div>
+  <div class="flex items-center gap-3">
+    <div class="text-right">
+      <div class="text-sm text-gray-600">Admin</div>
+      <div class="font-medium">Jane Doe</div>
+    </div>
+    <img src="/avatar.png" alt="avatar" class="w-10 h-10 rounded-full" onerror="this.style.display='none'" />
+  </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+  <div class="bg-white p-4 rounded shadow card-border">
+    <div class="flex items-center justify-between">
+      <div>
+        <div class="text-xs text-gray-500">Total Colleges</div>
+        <div class="text-2xl font-bold">12</div>
+      </div>
+      <div class="text-2xl text-[#FFD700]">🏛️</div>
+    </div>
+  </div>
+  <div class="bg-white p-4 rounded shadow card-border">
+    <div class="flex items-center justify-between">
+      <div>
+        <div class="text-xs text-gray-500">Total Buildings</div>
+        <div class="text-2xl font-bold">43</div>
+      </div>
+      <div class="text-2xl text-[#FFD700]">🏢</div>
+    </div>
+  </div>
+  <div class="bg-white p-4 rounded shadow card-border">
+    <div class="flex items-center justify-between">
+      <div>
+        <div class="text-xs text-gray-500">Total Rooms</div>
+        <div class="text-2xl font-bold">312</div>
+      </div>
+      <div class="text-2xl text-[#FFD700]">🚪</div>
+    </div>
+  </div>
+  <div class="bg-white p-4 rounded shadow card-border">
+    <div class="flex items-center justify-between">
+      <div>
+        <div class="text-xs text-gray-500">Ongoing Schedules</div>
+        <div class="text-2xl font-bold text-[#28A745]">7</div>
+      </div>
+      <div class="text-2xl text-[#FFD700]">📅</div>
+    </div>
+  </div>
+</div>
+
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <div class="lg:col-span-2 bg-white rounded shadow p-4">
+    <h3 class="font-semibold mb-3">Recent Activity</h3>
+    <table class="w-full text-left text-sm">
+      <thead class="bg-[#344158] text-white">
+        <tr>
+          <th class="p-2">Time</th>
+          <th class="p-2">Activity</th>
+          <th class="p-2">By</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="border-b"><td class="p-2">2025-09-29 09:12</td><td class="p-2">Room 201 added</td><td class="p-2">Admin</td></tr>
+        <tr class="border-b"><td class="p-2">2025-09-28 16:05</td><td class="p-2">Schedule updated: CS101</td><td class="p-2">Scheduler</td></tr>
+        <tr class="border-b"><td class="p-2">2025-09-27 11:11</td><td class="p-2">Building A renamed</td><td class="p-2">Admin</td></tr>
+        <tr class="border-b"><td class="p-2">2025-09-26 14:45</td><td class="p-2">College of Science created</td><td class="p-2">Admin</td></tr>
+        <tr class="border-b"><td class="p-2">2025-09-25 09:00</td><td class="p-2">Room 110 booked</td><td class="p-2">Instructor</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="bg-white rounded shadow p-4">
+    <h3 class="font-semibold mb-3">Schedule Overview</h3>
+    <div class="border rounded p-2 bg-white text-center text-gray-600">[Calendar widget placeholder]</div>
+  </div>
+</div>
+
+{{> footer }}
+

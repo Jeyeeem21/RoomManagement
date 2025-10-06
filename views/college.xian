@@ -1,0 +1,87 @@
+{{> head title="College Details" }}
+{{> sidebar }}
+
+<div class="w-full max-w-full px-6 mx-auto">
+  <div class="flex items-center justify-between py-6">
+    <div>
+      <nav class="text-sm text-gray-500">Home / Colleges / College of Engineering</nav>
+      <h2 class="text-4xl font-extrabold text-gray-900">College of Engineering</h2>
+      <p class="text-gray-600 mt-1">Leading engineering education and research with state-of-the-art facilities and world-class faculty.</p>
+    </div>
+    <div>
+      <button class="px-4 py-2 bg-[#0f172a] hover:bg-[#0b1220] text-white rounded shadow">✎ Edit College</button>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2 bg-white rounded-xl shadow-lg p-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+        <div class="p-4 bg-gray-50 rounded-lg">
+          <h4 class="font-semibold text-gray-900 mb-3">College Information</h4>
+          <div class="space-y-4 text-sm text-gray-700">
+            <div><div class="text-xs text-gray-500">Dean</div><div class="font-medium text-gray-900">Dr. Sarah Johnson</div></div>
+            <div><div class="text-xs text-gray-500">Established</div><div class="font-medium text-gray-900">1985</div></div>
+            <div><div class="text-xs text-gray-500">Email</div><div class="font-medium text-gray-900">engineering@mbc.edu</div></div>
+            <div><div class="text-xs text-gray-500">Phone</div><div class="font-medium text-gray-900">(555) 123-4567</div></div>
+            <div><div class="text-xs text-gray-500">Address</div><div class="font-medium text-gray-900">123 Engineering Drive, University Campus</div></div>
+          </div>
+        </div>
+
+        <div class="p-4 bg-gray-50 rounded-lg">
+          <h4 class="font-semibold text-gray-900 mb-3">Quick Stats</h4>
+          <div class="space-y-3 text-sm text-gray-700">
+            <div class="flex items-center justify-between"><div class="flex items-center gap-2 text-gray-800"><span>🏛️</span><span>Buildings</span></div><div class="font-medium text-gray-900">8</div></div>
+            <div class="flex items-center justify-between"><div class="flex items-center gap-2 text-gray-800"><span>🧭</span><span>Total Rooms</span></div><div class="font-medium text-gray-900">120</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8">
+        <div class="flex items-center justify-between mb-4">
+          <h4 class="font-semibold text-gray-900">Buildings</h4>
+          <button class="px-3 py-1 bg-white border rounded shadow-sm">Add Building</button>
+        </div>
+
+        <div class="space-y-4">
+          <div class="p-4 bg-white border rounded-lg shadow-sm flex items-center justify-between">
+            <div>
+              <div class="font-medium text-gray-900">Engineering Building A</div>
+              <div class="text-sm text-gray-600">25 rooms • 4 floors</div>
+            </div>
+            <a href="#" class="text-sm text-[#0f172a] font-medium">View Details</a>
+          </div>
+
+          <div class="p-4 bg-white border rounded-lg shadow-sm flex items-center justify-between">
+            <div>
+              <div class="font-medium text-gray-900">Engineering Building B</div>
+              <div class="text-sm text-gray-600">30 rooms • 5 floors</div>
+            </div>
+            <a href="#" class="text-sm text-[#0f172a] font-medium">View Details</a>
+          </div>
+
+          <div class="p-4 bg-white border rounded-lg shadow-sm flex items-center justify-between">
+            <div>
+              <div class="font-medium text-gray-900">Computer Science Building</div>
+              <div class="text-sm text-gray-600">20 rooms • 3 floors</div>
+            </div>
+            <a href="#" class="text-sm text-[#0f172a] font-medium">View Details</a>
+          </div>
+
+          <div class="p-4 bg-white border rounded-lg shadow-sm flex items-center justify-between">
+            <div>
+              <div class="font-medium text-gray-900">Mechanical Engineering Lab</div>
+              <div class="text-sm text-gray-600">15 rooms • 2 floors</div>
+            </div>
+            <a href="#" class="text-sm text-[#0f172a] font-medium">View Details</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lg:col-span-1">
+      <!-- right column intentionally left blank for spacing or widgets -->
+    </div>
+  </div>
+</div>
+
+{{> footer }}

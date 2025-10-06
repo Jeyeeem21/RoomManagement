@@ -1,0 +1,84 @@
+{{> head title="Rooms" }}
+{{> sidebar }}
+
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <nav class="text-sm text-gray-600">Home / Rooms</nav>
+    <h2 class="text-2xl font-semibold text-[#344158]">Rooms</h2>
+  </div>
+  <div></div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <div class="lg:col-span-1 bg-white rounded shadow p-4">
+    <h3 class="font-semibold text-[#344158] mb-3">Add / Edit Room</h3>
+    <form class="space-y-3">
+      <div>
+        <label class="block text-sm text-gray-700">Room Name</label>
+        <input class="w-full border rounded px-3 py-2" placeholder="e.g., Room 101" />
+      </div>
+      <div>
+        <label class="block text-sm text-gray-700">Building</label>
+        <select class="w-full border rounded px-3 py-2">
+          <option>Science Building A</option>
+          <option>Engineering Building B</option>
+        </select>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm text-gray-700">Capacity</label>
+          <input type="number" class="w-full border rounded px-3 py-2" value="40" />
+        </div>
+        <div>
+          <label class="block text-sm text-gray-700">Status</label>
+          <select class="w-full border rounded px-3 py-2">
+            <option>Available</option>
+            <option>Occupied</option>
+            <option>Maintenance</option>
+          </select>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <button class="px-4 py-2 bg-[#28A745] text-white rounded">Save</button>
+        <button type="reset" class="px-4 py-2 bg-gray-100 text-[#344158] rounded">Clear</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="lg:col-span-2 bg-white rounded shadow overflow-hidden">
+    <div class="p-3 border-b flex items-center justify-between">
+      <div class="font-medium text-[#344158]">Rooms</div>
+      <div class="flex items-center gap-3">
+        <input type="text" placeholder="Search by building or availability" class="px-3 py-2 border rounded" />
+        <select class="px-3 py-2 border rounded">
+          <option>All Buildings</option>
+          <option>Science Building A</option>
+        </select>
+      </div>
+    </div>
+    <table class="w-full text-left">
+      <thead class="bg-[#344158] text-white">
+        <tr>
+          <th class="p-3">Room Name</th>
+          <th class="p-3">Building</th>
+          <th class="p-3">Capacity</th>
+          <th class="p-3">Status</th>
+          <th class="p-3">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="border-b">
+          <td class="p-3">Room 101</td>
+          <td class="p-3">Science Building A</td>
+          <td class="p-3">40</td>
+          <td class="p-3"><span class="px-2 py-1 bg-[#28A745] text-white rounded text-xs">Available</span></td>
+          <td class="p-3"><button class="text-[#28A745] mr-2">Edit</button><button class="text-[#FFD700]">Delete</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal placeholder -->
+
+{{> footer }}

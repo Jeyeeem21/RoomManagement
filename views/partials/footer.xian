@@ -1,0 +1,53 @@
+    </main>
+    </div>
+    <footer class=" border-t bg-white text-gray-600 text-sm">
+      <div class="max-w-7xl mx-auto px-6 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div>
+            <div class="text-base font-semibold text-[#344158]">MBC University</div>
+            <p class="mt-2 text-gray-500">Room Management System powered by XianFire.</p>
+          </div>
+          <div>
+            <div class="text-base font-semibold text-[#344158]">Product</div>
+            <ul class="mt-2 space-y-2">
+              <li><a href="/dashboard" class="hover:text-[#28A745]">Dashboard</a></li>
+              <li><a href="/colleges" class="hover:text-[#28A745]">Colleges</a></li>
+              <li><a href="/buildings" class="hover:text-[#28A745]">Buildings</a></li>
+              <li><a href="/rooms" class="hover:text-[#28A745]">Rooms</a></li>
+              <li><a href="/schedules" class="hover:text-[#28A745]">Schedules</a></li>
+              <li><a href="/settings" class="hover:text-[#28A745]">Settings</a></li>
+            </ul>
+          </div>
+          <div>
+            <div class="text-base font-semibold text-[#344158]">Resources</div>
+            <ul class="mt-2 space-y-2">
+              <li><a href="#" class="hover:text-[#28A745]">Documentation</a></li>
+              <li><a href="#" class="hover:text-[#28A745]">Support</a></li>
+              <li><a href="#" class="hover:text-[#28A745]">API Status</a></li>
+            </ul>
+          </div>
+          <div>
+            <div class="text-base font-semibold text-[#344158]">Company</div>
+            <ul class="mt-2 space-y-2">
+              <li><a href="#" class="hover:text-[#28A745]">About</a></li>
+              <li><a href="/privacy" class="hover:text-[#28A745]">Privacy</a></li>
+              <li><a href="/terms" class="hover:text-[#28A745]">Terms</a></li>
+              <li><a href="mailto:support@example.com" class="hover:text-[#28A745]">Contact</a></li>
+            </ul>
+          </div>
+        </div>
+       
+      </div>
+</footer>
+
+    <script>
+      // Sidebar collapse toggle
+      const collapseBtn = document.getElementById('collapseBtn');
+      if (collapseBtn) {
+        collapseBtn.addEventListener('click', () => {
+          document.getElementById('app-shell').classList.toggle('sidebar-collapsed');
+        });
+      }
+    </script>
+</body>
+</html>

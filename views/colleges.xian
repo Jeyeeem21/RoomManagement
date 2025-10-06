@@ -1,0 +1,156 @@
+{{> head title="Colleges" }}
+{{> sidebar }}
+
+<div class="w-full max-w-full px-8 mx-auto font-sans text-base text-gray-800">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <nav class="text-sm text-gray-500">Home / Colleges</nav>
+      <h2 class="text-4xl font-extrabold text-gray-900">Colleges</h2>
+      <p class="text-gray-600 mt-1">Manage all colleges in the university system</p>
+    </div>
+    <div class="flex items-center gap-4">
+      <input type="text" id="searchCollege" placeholder="Search colleges..." class="px-4 py-2 border rounded w-80 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-green-200" />
+      <button id="openAddCollege" class="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded shadow transition">
+        <span class="text-xl">+</span>
+        <span class="font-medium">Add College</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- cards grid -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+  <!-- sample card -->
+    <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6 hover:shadow-2xl transition-transform transform hover:-translate-y-1">
+      <div class="h-1 w-12 bg-green-600 rounded mb-4"></div>
+      <h3 class="text-xl font-semibold text-gray-900">College of Engineering</h3>
+      <p class="text-sm text-gray-600 mt-2">Leading engineering education and research</p>
+
+      <div class="flex items-center gap-4 mt-4 text-sm text-gray-700">
+        <div class="flex items-center gap-2"><span class="text-lg">🏛️</span><span>8 Buildings</span></div>
+        <div class="flex items-center gap-2"><span class="text-lg">🧭</span><span>120 Rooms</span></div>
+      </div>
+
+      <div class="mt-4 text-sm text-gray-800">
+        <div class="font-medium">Dean</div>
+        <div class="mt-1">Dr. Sarah Johnson</div>
+        <div class="mt-3">
+          <a href="/college" class="inline-block px-3 py-2 mt-2 bg-green-600 hover:bg-green-700 text-white rounded text-sm shadow transition">View Details</a>
+          <button class="ml-3 text-sm text-green-600 hover:text-green-800 transition">Edit</button>
+        </div>
+      </div>
+    </div>
+
+  <!-- repeat for demo -->
+    <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6 hover:shadow-2xl transition-transform transform hover:-translate-y-1">
+      <div class="h-1 w-12 bg-green-600 rounded mb-4"></div>
+      <h3 class="text-xl font-semibold text-gray-900">College of Science</h3>
+      <p class="text-sm text-gray-600 mt-2">Excellence in scientific research and education</p>
+      <div class="flex items-center gap-4 mt-4 text-sm text-gray-700">
+        <div class="flex items-center gap-2"><span class="text-lg">🏛️</span><span>6 Buildings</span></div>
+        <div class="flex items-center gap-2"><span class="text-lg">🧭</span><span>95 Rooms</span></div>
+      </div>
+      <div class="mt-4 text-sm text-gray-800">
+        <div class="font-medium">Dean</div>
+        <div class="mt-1">Prof. Michael Chen</div>
+        <div class="mt-3">
+          <a href="/college" class="inline-block px-3 py-2 mt-2 bg-green-600 hover:bg-green-700 text-white rounded text-sm shadow transition">View Details</a>
+          <button class="ml-3 text-sm text-green-600 hover:text-green-800 transition">Edit</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6 hover:shadow-2xl transition-transform transform hover:-translate-y-1">
+      <div class="h-1 w-12 bg-green-600 rounded mb-4"></div>
+      <h3 class="text-xl font-semibold text-gray-900">College of Business</h3>
+      <p class="text-sm text-gray-600 mt-2">Preparing future business leaders</p>
+      <div class="flex items-center gap-4 mt-4 text-sm text-gray-700">
+        <div class="flex items-center gap-2"><span class="text-lg">🏛️</span><span>4 Buildings</span></div>
+        <div class="flex items-center gap-2"><span class="text-lg">🧭</span><span>68 Rooms</span></div>
+      </div>
+      <div class="mt-4 text-sm text-gray-800">
+        <div class="font-medium">Dean</div>
+        <div class="mt-1">Dr. Emily Rodriguez</div>
+        <div class="mt-3">
+          <a href="/college" class="inline-block px-3 py-2 mt-2 bg-green-600 hover:bg-green-700 text-white rounded text-sm shadow transition">View Details</a>
+          <button class="ml-3 text-sm text-green-600 hover:text-green-800 transition">Edit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Modal -->
+<div id="collegeModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden">
+  <div class="bg-white rounded shadow-lg w-11/12 md:w-2/3 lg:w-1/2 p-6">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-xl font-semibold">Add / Edit College</h3>
+      <button id="closeCollegeModal" class="text-gray-500">✕</button>
+    </div>
+    <form id="collegeForm" class="space-y-4">
+      <div>
+        <label class="block text-sm text-gray-700">College Name</label>
+        <input id="collegeName" name="name" class="w-full border rounded px-3 py-2" placeholder="e.g., College of Engineering" />
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm text-gray-700">Dean</label>
+          <input id="collegeDean" name="dean" class="w-full border rounded px-3 py-2" placeholder="Dean full name" />
+        </div>
+        <div>
+          <label class="block text-sm text-gray-700">Email</label>
+          <input id="collegeEmail" name="email" type="email" class="w-full border rounded px-3 py-2" placeholder="dean@college.edu" />
+        </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm text-gray-700">Established</label>
+          <input id="collegeEstablished" name="established" class="w-full border rounded px-3 py-2" placeholder="e.g., 1985" />
+        </div>
+        <div>
+          <label class="block text-sm text-gray-700">Phone</label>
+          <input id="collegePhone" name="phone" class="w-full border rounded px-3 py-2" placeholder="(555) 123-4567" />
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-3">
+        <button type="button" id="cancelCollege" class="px-4 py-2 bg-white border border-green-100 text-green-600 rounded hover:bg-green-50 transition">Cancel</button>
+        <button type="submit" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded transition">Save College</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Simple modal toggle logic
+  const openBtn = document.getElementById('openAddCollege');
+  const modal = document.getElementById('collegeModal');
+  const closeBtn = document.getElementById('closeCollegeModal');
+  const cancelBtn = document.getElementById('cancelCollege');
+
+  function openModal() { modal.classList.remove('hidden'); }
+  function closeModal() { modal.classList.add('hidden'); }
+
+  if (openBtn) openBtn.addEventListener('click', openModal);
+  if (closeBtn) closeBtn.addEventListener('click', closeModal);
+  if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+
+  // Prevent actual submit for demo; wiring to backend can be added later
+  const form = document.getElementById('collegeForm');
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      // gather values (could be sent via fetch to server)
+      const data = {
+        name: document.getElementById('collegeName').value,
+        dean: document.getElementById('collegeDean').value,
+        email: document.getElementById('collegeEmail').value,
+        established: document.getElementById('collegeEstablished').value,
+        phone: document.getElementById('collegePhone').value
+      };
+      console.log('Save college', data);
+      closeModal();
+    });
+  }
+</script>
+
+{{> footer }}

@@ -1,0 +1,72 @@
+{{> head title="Schedules" }}
+{{> sidebar }}
+
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <nav class="text-sm text-gray-600">Home / Schedules</nav>
+    <h2 class="text-2xl font-semibold text-[#344158]">Schedules</h2>
+  </div>
+  <div></div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <div class="lg:col-span-2 bg-white rounded shadow p-4">
+    <div class="text-sm text-gray-600 mb-3">Calendar View</div>
+    <div class="border rounded p-4 bg-white">
+      <div class="grid grid-cols-7 gap-2 text-xs text-gray-500 mb-2">
+        <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+      </div>
+      <div class="grid grid-cols-7 gap-2">
+        <div class="h-24 border rounded"></div>
+        <div class="h-24 border rounded"></div>
+        <div class="h-24 border rounded"><div class="m-1 p-1 bg-[#28A745] text-white rounded text-[10px]">CS101 — R201 — 9:00</div></div>
+        <div class="h-24 border rounded"></div>
+        <div class="h-24 border rounded"></div>
+        <div class="h-24 border rounded"></div>
+        <div class="h-24 border rounded"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded shadow p-4">
+    <h3 class="font-semibold mb-3">Add / Edit Schedule</h3>
+    <form class="space-y-3">
+      <div>
+        <label class="block text-sm text-gray-700">Room</label>
+        <select class="w-full border rounded px-3 py-2"><option>Room 201</option></select>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm text-gray-700">Course Code</label>
+          <input class="w-full border rounded px-3 py-2" placeholder="e.g., CS101" />
+        </div>
+        <div>
+          <label class="block text-sm text-gray-700">Instructor</label>
+          <input class="w-full border rounded px-3 py-2" placeholder="Prof. Ramos" />
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm text-gray-700">Date</label>
+          <input type="date" class="w-full border rounded px-3 py-2" />
+        </div>
+        <div>
+          <label class="block text-sm text-gray-700">Time</label>
+          <input type="time" class="w-full border rounded px-3 py-2" />
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <button class="px-4 py-2 bg-[#28A745] text-white rounded">Save</button>
+        <button type="reset" class="px-4 py-2 bg-gray-100 text-[#344158] rounded">Clear</button>
+      </div>
+    </form>
+    <h3 class="font-semibold mt-6 mb-2">Upcoming Events</h3>
+    <ul class="space-y-2 text-sm">
+      <li class="p-2 border rounded">CS101 — Room 201 — 09:00-10:30 — Prof. Ramos</li>
+      <li class="p-2 border rounded">MATH201 — Room 110 — 11:00-12:00 — Dr. Cruz</li>
+    </ul>
+    <div id="conflictWarning" class="mt-4 hidden p-2 bg-yellow-100 text-[#FFD700] rounded">Conflict detected: overlapping schedule in Room 201</div>
+  </div>
+</div>
+
+{{> footer }}
