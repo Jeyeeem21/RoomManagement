@@ -1,64 +1,573 @@
-{{> head title="Buildings" }}
-{{> sidebar }}
+{{> head title="Buildings"}}
+{{> sidebar active=active user=user}} <!-- Removed redundant initials -->
 
-<div class="flex items-center justify-between mb-6">
-  <div>
-    <nav class="text-sm text-gray-600">Home / Buildings</nav>
-    <h2 class="text-2xl font-semibold text-[#344158]">Buildings</h2>
-  </div>
-  <div></div>
-</div>
+<main class="main-content min-h-screen p-8" style="background: linear-gradient(135deg, #e6f0ea 0%, var(--bg-light) 100%);">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <nav class="text-sm text-gray-500 mb-2 font-medium">Home / Buildings</nav>
+        <h1 class="text-3xl font-semibold text-[--primary] mb-1">Buildings</h1>
+        <p class="text-gray-600 text-sm">Manage all buildings associated with each college</p>
+      </div>
+      <button id="openAddBuilding" class="flex items-center gap-2 px-5 py-2.5 bg-[--accent] hover:bg-emerald-700 text-white rounded-lg shadow-sm transition-all hover:shadow-md font-medium text-sm">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+        </svg>
+        <span>Add Building</span>
+      </button>
+    </div>
 
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-  <div class="lg:col-span-1 bg-white rounded shadow p-4">
-    <h3 class="font-semibold text-[#344158] mb-3">Add / Edit Building</h3>
-    <form class="space-y-3">
-      <div>
-        <label class="block text-sm text-gray-700">Building Name</label>
-        <input class="w-full border rounded px-3 py-2" placeholder="e.g., Science Building A" />
-      </div>
-      <div>
-        <label class="block text-sm text-gray-700">College</label>
-        <select class="w-full border rounded px-3 py-2">
-          <option>College of Science</option>
-          <option>College of Engineering</option>
-        </select>
-      </div>
-      <div>
-        <label class="block text-sm text-gray-700">Address</label>
-        <input class="w-full border rounded px-3 py-2" placeholder="123 University Ave" />
-      </div>
-      <div class="flex items-center gap-3">
-        <button class="px-4 py-2 bg-[#28A745] text-white rounded">Save</button>
-        <button type="reset" class="px-4 py-2 bg-gray-100 text-[#344158] rounded">Clear</button>
-      </div>
-    </form>
-  </div>
+    <!-- Search -->
+    <div class="relative max-w-md mb-8">
+      <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="8"/>
+        <path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input
+        type="text"
+        id="searchBuilding"
+        placeholder="Search buildings..."
+        aria-label="Search buildings by name or college"
+        class="w-full pl-10 pr-10 py-2.5 border border-[--border] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[--accent] focus:border-transparent bg-white placeholder-gray-400"
+      />
+      <button
+        id="clearSearch"
+        class="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 hover:text-gray-600 hidden"
+        aria-label="Clear search"
+        title="Clear search"
+      >
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
 
-  <div class="lg:col-span-2 space-y-6">
-    <section>
-      <div class="flex items-center justify-between mb-2">
-        <h3 class="text-xl font-semibold text-[#344158]">College of Science</h3>
-        <input type="text" placeholder="Search buildings..." class="px-3 py-2 border rounded" />
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="bg-white rounded shadow overflow-hidden">
-          <div class="bg-[#28A745] text-white p-3">Science Building A</div>
-          <div class="p-3">
-            <div class="text-sm text-gray-600">12 Rooms</div>
-            <div class="text-sm text-gray-600">123 University Ave</div>
-            <div class="mt-3">
-              <button class="text-[#28A745] mr-2">View Rooms</button>
-              <button class="text-[#333] mr-2">Edit</button>
-              <button class="text-[#FFD700]">Delete</button>
+    <!-- Buildings Grid -->
+    <div id="buildingGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {{#if buildings.length}}
+        {{#each buildings}}
+        <div class="building-card group bg-white rounded-xl border border-[--border] hover:border-[--accent] transition-all duration-300 hover:shadow-md overflow-hidden" data-name="{{name}}" data-college="{{college}}">
+          <div class="p-6">
+            <div class="flex items-start justify-between mb-4">
+              <div class="w-12 h-12 rounded-lg bg-emerald-50 flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M3 9.5l9-7 9 7V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
+                </svg>
+              </div>
+              <div class="w-1 h-12 bg-[--accent] rounded-full"></div>
+            </div>
+
+            <h3 class="text-lg font-semibold text-[--primary] mb-2 group-hover:text-[--accent] transition-colors">{{name}}</h3>
+            <p class="text-sm text-gray-600 mb-4 leading-relaxed"><strong>College:</strong> {{college}}</p>
+
+            <div class="py-3 border-t border-b border-[--border] mb-4 text-sm text-gray-600">
+              <div><strong>Rooms:</strong> {{totalrooms}}</div>
+              <div><strong>Address:</strong> {{location}}</div>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <a href="/buildings/view/{{id}}" class="flex-1 text-center px-4 py-2 bg-[--accent] hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-colors">View</a>
+              <button onclick="editBuilding('{{id}}')" class="px-4 py-2 border border-[--border] hover:border-[--accent] hover:bg-emerald-50 text-gray-700 hover:text-[--accent] rounded-lg text-sm font-medium transition-all">
+                Edit
+              </button>
+              <button onclick="deleteBuilding('{{id}}')" class="px-4 py-2 border border-[--border] hover:border-red-500 hover:bg-red-50 text-gray-700 hover:text-red-600 rounded-lg text-sm font-medium transition-all">
+                Delete
+              </button>
             </div>
           </div>
         </div>
+        {{/each}}
+      {{else}}
+        <div class="col-span-full text-center py-16 text-gray-500">
+          <svg class="w-10 h-10 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M12 20h9" />
+            <path d="M12 4h9" />
+            <path d="M4 9h16M4 15h16" />
+          </svg>
+          <p class="text-lg">No buildings found. Add one to get started.</p>
+        </div>
+      {{/if}}
+    </div>
+
+    <!-- Pagination -->
+    <div id="pagination" class="flex justify-center mt-10 gap-2"></div>
+  </div>
+</main>
+
+<!-- Modal -->
+<div id="buildingModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden backdrop-blur-sm">
+  <div class="bg-white rounded-xl shadow-2xl w-11/12 md:w-2/3 lg:w-1/2 max-w-2xl max-h-[90vh] overflow-y-auto">
+    <div class="sticky top-0 bg-white border-b border-[--border] px-6 py-4 flex items-center justify-between">
+      <h3 class="text-xl font-semibold text-[--primary]">Add / Edit Building</h3>
+      <button id="closeBuildingModal" class="text-gray-400 hover:text-gray-600 transition-colors">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <form id="buildingForm" class="p-6 space-y-5" method="POST">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1.5">Building Name</label>
+        <input id="buildingName" name="name" class="w-full border border-[--border] rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-[--accent] focus:border-transparent" required />
       </div>
-    </section>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1.5">College</label>
+        <select 
+          id="buildingCollege" 
+          name="college_id" 
+          class="w-full border border-[--border] rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-[--accent] focus:border-transparent"
+          required
+        >
+          <option disabled selected>Select College</option>
+          {{#each colleges}}
+            <option value="{{id}}">{{name}}</option>
+          {{/each}}
+        </select>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Floors</label>
+          <input id="buildingFloors" name="floors" type="number" min="0" class="w-full border border-[--border] rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-[--accent] focus:border-transparent" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Rooms</label>
+          <input id="buildingRooms" name="totalrooms" type="number" min="0" class="w-full border border-[--border] rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-[--accent] focus:border-transparent" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Built Year</label>
+          <input id="buildingYear" name="built_year" type="number" min="1800" max="2100" class="w-full border border-[--border] rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-[--accent] focus:border-transparent" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Status</label>
+          <select id="buildingStatus" name="status" class="w-full border border-[--border] rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-[--accent] focus:border-transparent">
+            <option value="">Select status</option>
+            <option value="active">active</option>
+            <option value="inactive">inactive</option>
+            <option value="maintenance">maintenance</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1.5">Address</label>
+        <input id="buildingAddress" name="location" class="w-full border border-[--border] rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-[--accent] focus:border-transparent" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1.5">Description</label>
+        <input id="buildingDescription" name="description" class="w-full border border-[--border] rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-[--accent] focus:border-transparent" />
+      </div>
+      <div class="flex items-center justify-end gap-3 pt-4 border-t border-[--border]">
+        <button type="button" id="cancelBuilding" class="px-5 py-2.5 bg-white border border-[--border] text-gray-700 rounded-lg hover:bg-gray-50 font-medium text-sm">
+          Cancel
+        </button>
+        <button type="submit" class="px-5 py-2.5 bg-[--accent] hover:bg-emerald-700 text-white rounded-lg font-medium text-sm shadow-sm">
+          Save Building
+        </button>
+      </div>
+    </form>
   </div>
 </div>
 
-<!-- Modal placeholder for add/edit -->
+<script>
+// ... (JavaScript remains unchanged)
+document.addEventListener('DOMContentLoaded', () => {
+  const cards = Array.from(document.querySelectorAll('.building-card'));
+  const pagination = document.getElementById('pagination');
+  const searchInput = document.getElementById('searchBuilding');
+  const clearSearchBtn = document.getElementById('clearSearch');
+  const buildingGrid = document.getElementById('buildingGrid');
+  let currentPage = 1;
+  const itemsPerPage = 6;
 
-{{> footer }}
+  function debounce(func, delay) {
+    let timeoutId;
+    return (...args) => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => func(...args), delay);
+    };
+  }
+
+  function displayPage(page, filteredCards = cards) {
+    buildingGrid.innerHTML = '';
+
+    if (filteredCards.length === 0 && searchInput.value.trim()) {
+      buildingGrid.innerHTML = `
+        <div class="col-span-full text-center py-16 text-gray-500">
+          <svg class="w-10 h-10 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M12 20h9" />
+            <path d="M12 4h9" />
+            <path d="M4 9h16M4 15h16" />
+          </svg>
+          <p class="text-lg">No buildings match your search.</p>
+        </div>
+      `;
+      pagination.innerHTML = '';
+      return;
+    }
+
+    filteredCards.forEach(card => card.classList.add('hidden'));
+    const start = (page - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const visibleCards = filteredCards.slice(start, end);
+
+    visibleCards.forEach(card => {
+      card.classList.remove('hidden');
+      buildingGrid.appendChild(card);
+    });
+
+    renderPagination(filteredCards);
+  }
+
+  function renderPagination(filteredCards = cards) {
+    pagination.innerHTML = '';
+    const totalPages = Math.ceil(filteredCards.length / itemsPerPage);
+    if (totalPages <= 1) return;
+
+    for (let i = 1; i <= totalPages; i++) {
+      const btn = document.createElement('button');
+      btn.textContent = i;
+      btn.className = `px-3 py-1 rounded-md text-sm ${i === currentPage ? 'bg-[--accent] text-white' : 'bg-gray-100 hover:bg-emerald-100 text-gray-700'}`;
+      btn.addEventListener('click', () => {
+        currentPage = i;
+        displayPage(currentPage, filteredCards);
+      });
+      pagination.appendChild(btn);
+    }
+  }
+
+  function normalizeString(str) {
+    return str.toLowerCase().trim().replace(/\s+/g, ' ');
+  }
+
+  const handleSearch = debounce((term) => {
+    const normalizedTerm = normalizeString(term);
+    const filtered = cards.filter(card =>
+      normalizeString(card.dataset.name).includes(normalizedTerm) ||
+      normalizeString(card.dataset.college).includes(normalizedTerm)
+    );
+    currentPage = 1;
+    displayPage(currentPage, filtered);
+    clearSearchBtn.classList.toggle('hidden', !term);
+  }, 300);
+
+  searchInput.addEventListener('input', (e) => handleSearch(e.target.value));
+  clearSearchBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    handleSearch('');
+    searchInput.focus();
+  });
+
+  displayPage(currentPage);
+
+  const modal = document.getElementById('buildingModal');
+  const openBtn = document.getElementById('openAddBuilding');
+  const closeBtn = document.getElementById('closeBuildingModal');
+  const cancelBtn = document.getElementById('cancelBuilding');
+  const form = document.getElementById('buildingForm');
+  let editMode = false;
+  let editId = null;
+
+  function openModal() {
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    modal.classList.add('hidden');
+    document.body.style.overflow = 'auto';
+    form.reset();
+    editMode = false;
+    editId = null;
+    form.setAttribute("action", "/buildings/add");
+  }
+
+  [closeBtn, cancelBtn].forEach(btn => btn?.addEventListener('click', closeModal));
+  openBtn?.addEventListener('click', () => {
+    form.setAttribute("action", "/buildings/add");
+    document.querySelector("h3").textContent = "Add Building";
+    openModal();
+  });
+
+  modal?.addEventListener('click', e => {
+    if (e.target === modal) closeModal();
+  });
+
+  function validateForm(data) {
+    let isValid = true;
+    const errors = {};
+
+    form.querySelectorAll("input, select").forEach(input => {
+      input.classList.remove("border-red-500");
+    });
+
+    if (!data.name.trim()) {
+      errors.name = "Building name is required";
+      isValid = false;
+      document.getElementById('buildingName').classList.add("border-red-500");
+    }
+    if (!data.college_id) {
+      errors.college_id = "College selection is required";
+      isValid = false;
+      document.getElementById('buildingCollege').classList.add("border-red-500");
+    }
+
+    if (!isValid) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Validation Error',
+        text: Object.values(errors)[0],
+        confirmButtonColor: 'var(--accent)',
+      });
+    }
+
+    return isValid;
+  }
+
+
+  form?.addEventListener('submit', async e => {
+    e.preventDefault();
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+    console.log('Form data sent:', data);
+
+    if (!validateForm(data)) return;
+
+    try {
+      const url = editMode ? `/buildings/update/${editId}` : '/buildings/add';
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      const result = await response.text();
+      console.log('Server response:', result);
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: result,
+        confirmButtonColor: 'var(--accent)',
+        timer: 1500,
+        showConfirmButton: false
+      });
+
+      closeModal();
+      location.reload();
+    } catch (error) {
+      console.error('Error:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: '❌ Failed to save changes.',
+        confirmButtonColor: '#DC2626',
+      });
+    }
+  });
+  /* ===========================
+   BUILDING MODAL KEYBOARD SHORTCUTS
+   =========================== */
+document.addEventListener('keydown', (event) => {
+  const modal = document.getElementById('buildingModal');
+  const form = document.getElementById('buildingForm');
+  const isModalOpen = !modal.classList.contains('hidden');
+
+  // === Ctrl + Enter → Open modal & focus Building Name ===
+  if (event.ctrlKey && event.key === 'Enter') {
+    event.preventDefault();
+    openModal();
+    setTimeout(() => {
+      document.getElementById('buildingName')?.focus();
+    }, 100);
+  }
+
+  // === Enter → Move to next input field ===
+ if (event.key === 'Enter' && !event.ctrlKey && isModalOpen) {
+  const active = document.activeElement;
+  const inputs = Array.from(form.querySelectorAll('input, select, textarea, button'));
+  const index = inputs.indexOf(active);
+
+  // ✅ Special handling for <select>
+  if (active && active.tagName === 'SELECT') {
+    const hasValue = active.value && active.value.trim() !== 'Select College' && active.value.trim() !== 'Select status';
+
+    if (!hasValue) {
+      // If no value yet, allow default Enter (opens dropdown)
+      return;
+    } else {
+      // If value already selected, move to next field
+      event.preventDefault();
+      if (index > -1 && index < inputs.length - 1) {
+        inputs[index + 1].focus();
+      } else if (index === inputs.length - 1) {
+        form.requestSubmit();
+      }
+      return;
+    }
+  }
+
+  // ✅ For all other input types
+  if (index > -1 && index < inputs.length - 1) {
+    event.preventDefault();
+    inputs[index + 1].focus();
+  } else if (index === inputs.length - 1) {
+    event.preventDefault();
+    form.requestSubmit();
+  }
+}
+
+  // === Ctrl + D → Clear all fields ===
+  if (event.ctrlKey && event.key.toLowerCase() === 'd' && isModalOpen) {
+    event.preventDefault();
+    form.reset();
+    document.getElementById('buildingName')?.focus();
+    Swal.fire({
+      toast: true,
+      position: 'bottom-end',
+      icon: 'info',
+      title: 'All fields cleared.',
+      showConfirmButton: false,
+      timer: 1200
+    });
+  }
+
+  // === Esc → Clear only current textbox ===
+  if (!event.ctrlKey && event.key === 'Escape' && isModalOpen) {
+    const active = document.activeElement;
+    if (active && active.tagName === 'INPUT') {
+      event.preventDefault();
+      active.value = '';
+      Swal.fire({
+        toast: true,
+        position: 'bottom-end',
+        icon: 'info',
+        title: 'Textbox cleared.',
+        showConfirmButton: false,
+        timer: 800
+      });
+    }
+  }
+
+  // === Ctrl + B → Cancel / Close modal ===
+  if (event.ctrlKey && event.key.toLowerCase() === 'b' && isModalOpen) {
+    event.preventDefault();
+    closeModal();
+    Swal.fire({
+      toast: true,
+      position: 'bottom-end',
+      icon: 'warning',
+      title: 'Modal closed.',
+      showConfirmButton: false,
+      timer: 1000
+    });
+  }
+});
+
+
+  window.editBuilding = async function(id) {
+    try {
+      const res = await fetch(`/buildings/get/${id}`);
+      const data = await res.json();
+
+      if (!data || data.error) throw new Error('Building not found');
+
+      document.getElementById('buildingName').value = data.name || '';
+      document.getElementById('buildingCollege').value = data.college_id || '';
+      document.getElementById('buildingAddress').value = data.location || '';
+      document.getElementById('buildingDescription').value = data.description || '';
+      document.getElementById('buildingFloors').value = data.floors || '';
+      document.getElementById('buildingRooms').value = data.totalrooms || '';
+      document.getElementById('buildingYear').value = data.built_year || '';
+      document.getElementById('buildingStatus').value = data.status || '';
+
+      document.querySelector("h3").textContent = "Edit Building";
+      editMode = true;
+      editId = id;
+      form.setAttribute("action", `/buildings/update/${id}`);
+      openModal();
+    } catch (err) {
+      console.error(err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: 'Failed to load building data.',
+      });
+    }
+  }
+
+  window.deleteBuilding = async function(id) {
+    const confirm = await Swal.fire({
+      title: 'Are you sure?',
+      text: 'This building will be deleted permanently.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Yes, delete it!'
+    });
+
+    if (!confirm.isConfirmed) return;
+
+    try {
+      const res = await fetch('/buildings/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+
+      const result = await res.text();
+      Swal.fire({
+        icon: 'success',
+        title: 'Deleted!',
+        text: result,
+        timer: 1500,
+        showConfirmButton: false
+      });
+
+      setTimeout(() => location.reload(), 1500);
+    } catch (err) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: 'Failed to delete building.',
+      });
+    }
+  }
+});
+ document.addEventListener('keydown', (event) => {
+  if (event.ctrlKey && event.altKey) {
+    switch (event.key.toLowerCase()) {
+      case 'c': // Ctrl + Alt + C → Add College
+        window.location.href = '/colleges';
+        break;
+      case 'b': // Ctrl + Alt + B → Add Building
+        window.location.href = '/buildings';
+        break;
+      case 'r': // Ctrl + Alt + R → Add Room
+        window.location.href = '/rooms';
+        break;
+      case 's': // Ctrl + Alt + S → Add Schedule
+        window.location.href = '/schedules';
+        break;
+      case 'd': // Ctrl + Alt + D → Go to Dashboard
+        window.location.href = '/dashboard';
+        break;
+       case 'l': // Ctrl + Alt + L → Go to Logout
+        window.location.href = '/logout';
+        break;
+      case 'a': // Ctrl + Alt + A → Go to Home
+        window.location.href = '/settings';
+        break;
+      default:
+        return;
+    }
+
+    // Prevent default browser actions (optional)
+    event.preventDefault();
+  }
+});
+
+</script>
+
+{{> footer}}

@@ -25,7 +25,7 @@
   // Firebase doesn't require predefined models.
   // Use Firestore directly in controllers or create helper functions here.
   // Collection name: "room"
-
+//models/Room.js
   import { DataTypes } from "sequelize";
 import { sequelize } from "./db.js";
 

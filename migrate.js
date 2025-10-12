@@ -32,7 +32,7 @@ import { Building } from "./models/Building.js";
 import { College } from "./models/College.js";
 import { Room } from "./models/Room.js";
 import { Schedule } from "./models/Schedule.js";
-import "./models/associations.js"; 
+import "./models/assiociation.js"; 
 
 // Server-level connection (no database selected)
 const rootSequelize = new Sequelize("mysql://root:@localhost:3306/");

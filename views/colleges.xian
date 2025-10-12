@@ -1,156 +1,515 @@
-{{> head title="Colleges" }}
-{{> sidebar }}
+{{> head title="Colleges"}}
+{{> sidebar active=active user=user}}
 
-<div class="w-full max-w-full px-8 mx-auto font-sans text-base text-gray-800">
-  <div class="flex items-center justify-between mb-6">
-    <div>
-      <nav class="text-sm text-gray-500">Home / Colleges</nav>
-      <h2 class="text-4xl font-extrabold text-gray-900">Colleges</h2>
-      <p class="text-gray-600 mt-1">Manage all colleges in the university system</p>
+<main class="main-content min-h-screen p-8" style="background: linear-gradient(135deg, #e6f0ea 0%, var(--bg-light) 100%);">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h1 class="text-3xl font-semibold" style="color: var(--primary);">Colleges</h1>
+          <p class="text-sm" style="color: #64748b;">Manage all colleges in the university system</p>
+        </div>
+        <button id="openAddCollege" class="flex items-center gap-2 px-5 py-2.5 bg-[--accent] hover:bg-emerald-700 text-white rounded-lg shadow-sm transition-all hover:shadow-md font-medium text-sm">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+          </svg>
+          <span>Add College</span>
+        </button>
+      </div>
+
+      <!-- Search -->
+      <div class="relative max-w-md mb-3">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input
+          type="text"
+          id="searchCollege"
+          placeholder="Search colleges..."
+          aria-label="Search colleges by name or dean"
+          class="w-full pl-10 pr-10 py-2.5 border border-[--border] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[--accent] focus:border-transparent bg-white placeholder-gray-400"
+        />
+        <button
+          id="clearSearch"
+          class="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 hover:text-gray-600 hidden"
+          aria-label="Clear search"
+          title="Clear search"
+        >
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- College Cards Grid -->
+      <div id="collegeGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {{#if colleges.length}}
+          {{#each colleges}}
+          <div class="college-card group bg-white rounded-xl border border-[--border] hover:border-[--accent] transition-all duration-300 hover:shadow-lg overflow-hidden" data-name="{{name}}" data-dean="{{dean}}">
+            <div class="p-6">
+              <div class="flex items-start justify-between mb-4">
+                <div class="w-12 h-12 rounded-lg bg-emerald-50 flex items-center justify-center flex-shrink-0">
+                  <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M12 3L2 8l10 5 10-5-10-5z"/>
+                    <path d="M2 13l10 5 10-5"/>
+                  </svg>
+                </div>
+                <div class="w-1 h-12 bg-[--accent] rounded-full"></div>
+              </div>
+
+              <h3 class="text-lg font-semibold text-[--primary] mb-2 group-hover:text-[--accent] transition-colors">{{name}}</h3>
+              <p class="text-sm text-gray-600 mb-4 leading-relaxed">{{description}}</p>
+
+              <div class="py-3 border-t border-b border-[--border] mb-4 text-sm text-gray-600">
+                <div><strong>Established:</strong> {{established}}</div>
+                <div><strong>Email:</strong> {{email}}</div>
+                <div><strong>Phone:</strong> {{phone}}</div>
+              </div>
+
+              <div class="mb-4">
+                <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Dean</div>
+                <div class="text-sm font-medium text-[--primary]">{{dean}}</div>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <button onclick="viewCollege('{{id}}')" class="flex-1 text-center px-4 py-2 bg-[--accent] hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-colors">
+                  View
+                </button>
+                <button onclick="editCollege('{{id}}')" class="px-4 py-2 border border-gray-200 hover:border-emerald-500 hover:bg-emerald-50 text-gray-700 hover:text-emerald-700 rounded-lg text-sm font-medium transition-all">
+                  Edit
+                </button>
+                <button onclick="deleteCollege('{{id}}')" class="px-4 py-2 border border-[--border] hover:border-red-500 hover:bg-red-50 text-gray-700 hover:text-red-600 rounded-lg text-sm font-medium transition-all">
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+          {{/each}}
+        {{else}}
+          <div class="col-span-full text-center py-16 text-gray-500">
+            <svg class="w-10 h-10 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M12 20h9" />
+              <path d="M12 4h9" />
+              <path d="M4 9h16M4 15h16" />
+            </svg>
+            <p class="text-lg">No colleges found. Add one to get started.</p>
+          </div>
+        {{/if}}
+      </div>
+
+      <!-- Pagination Controls -->
+      <div id="pagination" class="flex justify-center mt-10 gap-2"></div>
     </div>
-    <div class="flex items-center gap-4">
-      <input type="text" id="searchCollege" placeholder="Search colleges..." class="px-4 py-2 border rounded w-80 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-green-200" />
-      <button id="openAddCollege" class="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded shadow transition">
-        <span class="text-xl">+</span>
-        <span class="font-medium">Add College</span>
+  </div>
+</main>
+
+<!-- Modal -->
+<div id="collegeModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden backdrop-blur-sm">
+  <div class="bg-white rounded-xl shadow-2xl w-11/12 md:w-2/3 lg:w-1/2 max-w-2xl max-h-[90vh] overflow-y-auto">
+    <div class="sticky top-0 bg-white border-b border-[--border] px-6 py-4 flex items-center justify-between">
+      <h3 class="text-xl font-semibold text-[--primary]">Add / Edit College</h3>
+      <button id="closeCollegeModal" class="text-gray-400 hover:text-gray-600 transition-colors">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
       </button>
     </div>
-  </div>
-
-  <!-- cards grid -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-  <!-- sample card -->
-    <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6 hover:shadow-2xl transition-transform transform hover:-translate-y-1">
-      <div class="h-1 w-12 bg-green-600 rounded mb-4"></div>
-      <h3 class="text-xl font-semibold text-gray-900">College of Engineering</h3>
-      <p class="text-sm text-gray-600 mt-2">Leading engineering education and research</p>
-
-      <div class="flex items-center gap-4 mt-4 text-sm text-gray-700">
-        <div class="flex items-center gap-2"><span class="text-lg">🏛️</span><span>8 Buildings</span></div>
-        <div class="flex items-center gap-2"><span class="text-lg">🧭</span><span>120 Rooms</span></div>
-      </div>
-
-      <div class="mt-4 text-sm text-gray-800">
-        <div class="font-medium">Dean</div>
-        <div class="mt-1">Dr. Sarah Johnson</div>
-        <div class="mt-3">
-          <a href="/college" class="inline-block px-3 py-2 mt-2 bg-green-600 hover:bg-green-700 text-white rounded text-sm shadow transition">View Details</a>
-          <button class="ml-3 text-sm text-green-600 hover:text-green-800 transition">Edit</button>
-        </div>
-      </div>
-    </div>
-
-  <!-- repeat for demo -->
-    <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6 hover:shadow-2xl transition-transform transform hover:-translate-y-1">
-      <div class="h-1 w-12 bg-green-600 rounded mb-4"></div>
-      <h3 class="text-xl font-semibold text-gray-900">College of Science</h3>
-      <p class="text-sm text-gray-600 mt-2">Excellence in scientific research and education</p>
-      <div class="flex items-center gap-4 mt-4 text-sm text-gray-700">
-        <div class="flex items-center gap-2"><span class="text-lg">🏛️</span><span>6 Buildings</span></div>
-        <div class="flex items-center gap-2"><span class="text-lg">🧭</span><span>95 Rooms</span></div>
-      </div>
-      <div class="mt-4 text-sm text-gray-800">
-        <div class="font-medium">Dean</div>
-        <div class="mt-1">Prof. Michael Chen</div>
-        <div class="mt-3">
-          <a href="/college" class="inline-block px-3 py-2 mt-2 bg-green-600 hover:bg-green-700 text-white rounded text-sm shadow transition">View Details</a>
-          <button class="ml-3 text-sm text-green-600 hover:text-green-800 transition">Edit</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6 hover:shadow-2xl transition-transform transform hover:-translate-y-1">
-      <div class="h-1 w-12 bg-green-600 rounded mb-4"></div>
-      <h3 class="text-xl font-semibold text-gray-900">College of Business</h3>
-      <p class="text-sm text-gray-600 mt-2">Preparing future business leaders</p>
-      <div class="flex items-center gap-4 mt-4 text-sm text-gray-700">
-        <div class="flex items-center gap-2"><span class="text-lg">🏛️</span><span>4 Buildings</span></div>
-        <div class="flex items-center gap-2"><span class="text-lg">🧭</span><span>68 Rooms</span></div>
-      </div>
-      <div class="mt-4 text-sm text-gray-800">
-        <div class="font-medium">Dean</div>
-        <div class="mt-1">Dr. Emily Rodriguez</div>
-        <div class="mt-3">
-          <a href="/college" class="inline-block px-3 py-2 mt-2 bg-green-600 hover:bg-green-700 text-white rounded text-sm shadow transition">View Details</a>
-          <button class="ml-3 text-sm text-green-600 hover:text-green-800 transition">Edit</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Add/Edit Modal -->
-<div id="collegeModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden">
-  <div class="bg-white rounded shadow-lg w-11/12 md:w-2/3 lg:w-1/2 p-6">
-    <div class="flex items-center justify-between mb-4">
-      <h3 class="text-xl font-semibold">Add / Edit College</h3>
-      <button id="closeCollegeModal" class="text-gray-500">✕</button>
-    </div>
-    <form id="collegeForm" class="space-y-4">
+    <form id="collegeForm" class="p-6 space-y-5" method="POST">
       <div>
-        <label class="block text-sm text-gray-700">College Name</label>
-        <input id="collegeName" name="name" class="w-full border rounded px-3 py-2" placeholder="e.g., College of Engineering" />
+        <label class="block text-sm font-medium text-gray-700 mb-1.5">College Name</label>
+        <input id="collegeName" name="name" class="w-full border border-[--border] rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-[--accent] focus:border-transparent" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1.5">Description</label>
+        <input id="collegeDescription" name="description" class="w-full border border-[--border] rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-[--accent] focus:border-transparent" />
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label class="block text-sm text-gray-700">Dean</label>
-          <input id="collegeDean" name="dean" class="w-full border rounded px-3 py-2" placeholder="Dean full name" />
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Dean</label>
+          <input id="collegeDean" name="dean" class="w-full border border-[--border] rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-[--accent] focus:border-transparent" />
         </div>
         <div>
-          <label class="block text-sm text-gray-700">Email</label>
-          <input id="collegeEmail" name="email" type="email" class="w-full border rounded px-3 py-2" placeholder="dean@college.edu" />
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
+          <input id="collegeEmail" name="email" type="email" class="w-full border border-[--border] rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-[--accent] focus:border-transparent" />
         </div>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label class="block text-sm text-gray-700">Established</label>
-          <input id="collegeEstablished" name="established" class="w-full border rounded px-3 py-2" placeholder="e.g., 1985" />
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Established</label>
+          <input id="collegeEstablished" name="established" class="w-full border border-[--border] rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-[--accent] focus:border-transparent" />
         </div>
         <div>
-          <label class="block text-sm text-gray-700">Phone</label>
-          <input id="collegePhone" name="phone" class="w-full border rounded px-3 py-2" placeholder="(555) 123-4567" />
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Phone</label>
+          <input id="collegePhone" name="phone" class="w-full border border-[--border] rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-[--accent] focus:border-transparent" />
         </div>
       </div>
-
-      <div class="flex items-center justify-end gap-3">
-        <button type="button" id="cancelCollege" class="px-4 py-2 bg-white border border-green-100 text-green-600 rounded hover:bg-green-50 transition">Cancel</button>
-        <button type="submit" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded transition">Save College</button>
+      <div class="flex items-center justify-end gap-3 pt-4 border-t border-[--border]">
+        <button type="button" id="cancelCollege" class="px-5 py-2.5 bg-white border border-[--border] text-gray-700 rounded-lg hover:bg-gray-50 font-medium text-sm">
+          Cancel
+        </button>
+        <button type="submit" class="px-5 py-2.5 bg-[--accent] hover:bg-emerald-700 text-white rounded-lg font-medium text-sm shadow-sm">
+          Save College
+        </button>
       </div>
     </form>
   </div>
 </div>
 
 <script>
-  // Simple modal toggle logic
+  /* ====== PAGINATION & SEARCH ====== */
+  const cards = Array.from(document.querySelectorAll('.college-card'));
+  const pagination = document.getElementById('pagination');
+  const searchInput = document.getElementById('searchCollege');
+  const clearSearchBtn = document.getElementById('clearSearch');
+  const collegeGrid = document.getElementById('collegeGrid');
+  let currentPage = 1;
+  const itemsPerPage = 6;
+
+  function debounce(func, delay) {
+    let timeoutId;
+    return (...args) => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => func(...args), delay);
+    };
+  }
+
+  function displayPage(page, filteredCards = cards) {
+    collegeGrid.innerHTML = '';
+
+    if (filteredCards.length === 0 && searchInput.value.trim()) {
+      collegeGrid.innerHTML = `
+        <div class="col-span-full text-center py-16 text-gray-500">
+          <svg class="w-10 h-10 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M12 20h9" />
+            <path d="M12 4h9" />
+            <path d="M4 9h16M4 15h16" />
+          </svg>
+          <p class="text-lg">No colleges match your search.</p>
+        </div>
+      `;
+      pagination.innerHTML = '';
+      return;
+    }
+
+    filteredCards.forEach(card => card.classList.add('hidden'));
+    const start = (page - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const visibleCards = filteredCards.slice(start, end);
+    
+    visibleCards.forEach(card => {
+      card.classList.remove('hidden');
+      collegeGrid.appendChild(card);
+    });
+
+    renderPagination(filteredCards);
+  }
+
+  function renderPagination(filteredCards = cards) {
+    pagination.innerHTML = '';
+    const totalPages = Math.ceil(filteredCards.length / itemsPerPage);
+    if (totalPages <= 1) return;
+
+    for (let i = 1; i <= totalPages; i++) {
+      const btn = document.createElement('button');
+      btn.textContent = i;
+      btn.className = `px-3 py-1 rounded-md text-sm ${i === currentPage ? 'bg-[--accent] text-white' : 'bg-gray-100 hover:bg-emerald-100 text-gray-700'}`;
+      btn.addEventListener('click', () => {
+        currentPage = i;
+        displayPage(currentPage, filteredCards);
+      });
+      pagination.appendChild(btn);
+    }
+  }
+
+  function normalizeString(str) {
+    return str.toLowerCase().trim().replace(/\s+/g, ' ');
+  }
+
+  const handleSearch = debounce((term) => {
+    const normalizedTerm = normalizeString(term);
+    const filtered = cards.filter(card =>
+      normalizeString(card.dataset.name).includes(normalizedTerm) ||
+      normalizeString(card.dataset.dean).includes(normalizedTerm)
+    );
+    currentPage = 1;
+    displayPage(currentPage, filtered);
+    clearSearchBtn.classList.toggle('hidden', !term);
+  }, 300);
+
+  searchInput.addEventListener('input', (e) => handleSearch(e.target.value));
+  clearSearchBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    handleSearch('');
+    searchInput.focus();
+  });
+
+  displayPage(currentPage);
+
   const openBtn = document.getElementById('openAddCollege');
   const modal = document.getElementById('collegeModal');
   const closeBtn = document.getElementById('closeCollegeModal');
   const cancelBtn = document.getElementById('cancelCollege');
-
-  function openModal() { modal.classList.remove('hidden'); }
-  function closeModal() { modal.classList.add('hidden'); }
-
-  if (openBtn) openBtn.addEventListener('click', openModal);
-  if (closeBtn) closeBtn.addEventListener('click', closeModal);
-  if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
-
-  // Prevent actual submit for demo; wiring to backend can be added later
   const form = document.getElementById('collegeForm');
-  if (form) {
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      // gather values (could be sent via fetch to server)
-      const data = {
-        name: document.getElementById('collegeName').value,
-        dean: document.getElementById('collegeDean').value,
-        email: document.getElementById('collegeEmail').value,
-        established: document.getElementById('collegeEstablished').value,
-        phone: document.getElementById('collegePhone').value
-      };
-      console.log('Save college', data);
-      closeModal();
-    });
+
+  let editMode = false;
+  let editId = null;
+
+ /* ====== KEYBOARD SHORTCUTS FOR MODAL CONTROL ====== */
+document.addEventListener('keydown', (event) => {
+  const modal = document.getElementById('collegeModal');
+  const isModalOpen = !modal.classList.contains('hidden');
+  const form = document.getElementById('collegeForm');
+
+  // === Ctrl + Enter : Open modal and focus College Name ===
+  if (event.ctrlKey && event.key === 'Enter') {
+    openModal();
+    setTimeout(() => {
+      const firstField = document.getElementById('collegeName');
+      if (firstField) firstField.focus();
+    }, 100);
+    event.preventDefault();
   }
+
+  // === Enter : Move to next input field ===
+  if (event.key === 'Enter' && !event.ctrlKey && isModalOpen) {
+    const inputs = Array.from(form.querySelectorAll('input, select, textarea, button'));
+    const index = inputs.indexOf(document.activeElement);
+    if (index > -1 && index < inputs.length - 1) {
+      event.preventDefault();
+      inputs[index + 1].focus();
+    } else if (index === inputs.length - 1) {
+      // If already at the last button (Save), submit form
+      event.preventDefault();
+      form.requestSubmit();
+    }
+  }
+
+  // === Ctrl + Esc : Clear all fields in the form ===
+  if (event.ctrlKey && event.key.toLowerCase() === 'd' && isModalOpen) {
+    form.reset();
+    const firstField = document.getElementById('collegeName');
+    if (firstField) firstField.focus();
+    event.preventDefault();
+  }
+
+  // === Esc : Clear only the current field ===
+  if (!event.ctrlKey && event.key === 'Escape' && isModalOpen) {
+    const active = document.activeElement;
+    if (active && active.tagName === 'INPUT') {
+      active.value = '';
+    }
+    event.preventDefault();
+  }
+
+  // === Ctrl + B : Cancel/Close the modal ===
+  if (event.ctrlKey && event.key.toLowerCase() === 'b' && isModalOpen) {
+    closeModal();
+    event.preventDefault();
+  }
+});
+
+  function openModal() {
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    modal.classList.add('hidden');
+    document.body.style.overflow = 'auto';
+    form.reset();
+    editMode = false;
+    editId = null;
+    form.setAttribute("action", "/colleges/add");
+  }
+
+  [closeBtn, cancelBtn].forEach(btn => btn?.addEventListener('click', closeModal));
+  openBtn?.addEventListener('click', () => {
+    form.setAttribute("action", "/colleges/add");
+    document.querySelector("h3").textContent = "Add College";
+    openModal();
+  });
+
+  modal?.addEventListener('click', e => {
+    if (e.target === modal) closeModal();
+  });
+
+  function validateForm(data) {
+    let isValid = true;
+    const errors = {};
+
+    form.querySelectorAll("input").forEach(input => {
+      input.classList.remove("border-red-500");
+    });
+
+    if (!data.name.trim()) {
+      errors.name = "College name is required";
+      isValid = false;
+    }
+    if (!data.dean.trim()) {
+      errors.dean = "Dean name is required";
+      isValid = false;
+    }
+    if (data.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+      errors.email = "Invalid email format";
+      isValid = false;
+    }
+
+    if (!isValid) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Validation Error',
+        text: Object.values(errors)[0],
+        confirmButtonColor: 'var(--accent)',
+      });
+    }
+
+    return isValid;
+  }
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+
+    if (!validateForm(data)) return;
+
+    try {
+      const url = editMode ? `/colleges/update/${editId}` : '/colleges/add';
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      const result = await response.text();
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: result,
+        confirmButtonColor: 'var(--accent)',
+        timer: 1500,
+        showConfirmButton: false
+      });
+
+      closeModal();
+      setTimeout(() => location.reload(), 1500);
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: '❌ Failed to save changes.',
+        confirmButtonColor: '#DC2626',
+      });
+    }
+  });
+
+  async function editCollege(id) {
+    try {
+      const res = await fetch(`/colleges/get/${id}`);
+      const data = await res.json();
+
+      if (!data || data.error) throw new Error('College not found');
+
+      document.getElementById('collegeName').value = data.name || '';
+      document.getElementById('collegeDescription').value = data.description || '';
+      document.getElementById('collegeDean').value = data.dean || '';
+      document.getElementById('collegeEmail').value = data.email || '';
+      document.getElementById('collegeEstablished').value = data.established || '';
+      document.getElementById('collegePhone').value = data.phone || '';
+
+      document.querySelector("h3").textContent = "Edit College";
+      editMode = true;
+      editId = id;
+      openModal();
+    } catch (err) {
+      console.error(err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: 'Failed to load college data.',
+      });
+    }
+  }
+
+  async function deleteCollege(id) {
+    const confirm = await Swal.fire({
+      title: 'Are you sure?',
+      text: "This college will be permanently deleted.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Yes, delete it!'
+    });
+
+    if (!confirm.isConfirmed) return;
+
+    try {
+      const res = await fetch('/colleges/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+
+      const result = await res.text();
+      Swal.fire({
+        icon: 'success',
+        title: 'Deleted!',
+        text: result,
+        timer: 1500,
+        showConfirmButton: false
+      });
+
+      setTimeout(() => location.reload(), 1500);
+    } catch (err) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: 'Failed to delete college.',
+      });
+    }
+  }
+
+  function viewCollege(id) {
+    window.location.href = `/colleges/view/${id}`;
+  }
+
+   document.addEventListener('keydown', (event) => {
+  if (event.ctrlKey && event.altKey) {
+    switch (event.key.toLowerCase()) {
+      case 'c': // Ctrl + Alt + C → Add College
+        window.location.href = '/colleges';
+        break;
+      case 'b': // Ctrl + Alt + B → Add Building
+        window.location.href = '/buildings';
+        break;
+      case 'r': // Ctrl + Alt + R → Add Room
+        window.location.href = '/rooms';
+        break;
+      case 's': // Ctrl + Alt + S → Add Schedule
+        window.location.href = '/schedules';
+        break;
+      case 'd': // Ctrl + Alt + D → Go to Dashboard
+        window.location.href = '/dashboard';
+        break;
+       case 'l': // Ctrl + Alt + L → Go to Logout
+        window.location.href = '/logout';
+        break;
+      case 'a': // Ctrl + Alt + A → Go to Home
+        window.location.href = '/settings';
+        break;
+      default:
+        return;
+    }
+
+    // Prevent default browser actions (optional)
+    event.preventDefault();
+  }
+});
+
 </script>
 
-{{> footer }}
+{{> footer}}

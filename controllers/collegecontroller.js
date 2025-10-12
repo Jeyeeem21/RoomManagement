@@ -1,70 +1,92 @@
 /*
-    MIT License
-    
-    Copyright (c) 2025 Christian I. Cabrera || XianFire Framework
-    Mindoro State University - Philippines
+  MIT License
+  (c) 2025 Christian I. Cabrera || XianFire Framework
+*/
 
-    Permission is hereby granted, free of charge, to any person obtaining a copy
-    of this software and associated documentation files (the "Software"), to deal
-    in the Software without restriction, including without limitation the rights
-    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-    copies of the Software, and to permit persons to whom the Software is
-    furnished to do so, subject to the following conditions:
-
-    The above copyright notice and this permission notice shall be included in all
-    copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-    SOFTWARE.
-    */
 import { College, sequelize } from "../models/College.js";
-await sequelize.sync();
+import { Building } from "../models/Building.js";
+import { Room } from "../models/Room.js";
+import { User } from "../models/userModel.js"; // Added User import
+import "../models/assiociation.js";
 
 const collegecontroller = {
+  // Show all colleges
   indexCollege: async (req, res) => {
-    const colleges = await College.findAll();
-    res.render("colleges", { colleges });
-  },
-
-  addCollege: async (req, res) => {
-    const { name, dean, description } = req.body;
-    await College.create({ name, dean, description });
-    res.send("✅ College data saved!");
-  },
-
-  deleteCollege: async (req, res) => {
-    const { id } = req.body;
-    await College.destroy({ where: { id } });
-    res.send("🗑️ College deleted!");
-  },
-
-  addNewCollege: (req, res) => {
-    res.render("add-new-college");
-  },
-
-  editCollege: async (req, res) => {
     try {
-      const { id } = req.params;
-      const college = await College.findByPk(id);
-      if (!college) return res.status(404).send("College not found");
-      res.render("edit-college", { college });
+      // Fetch user data
+      const user = await User.findByPk(req.session.userId, {
+        attributes: ['name', 'role']
+      });
+      if (!user) {
+        req.session.destroy();
+        return res.redirect("/login");
+      }
+      const initials = user.name.charAt(0).toUpperCase(); // First letter of name
+
+      const colleges = await College.findAll();
+      res.render("colleges", {
+        active: "colleges",
+        title: "Colleges",
+        colleges,
+        user: { name: user.name, role: user.role, initials }
+      });
     } catch (error) {
-      console.error("Error fetching college:", error);
-      res.status(500).send("Internal Server Error");
+      console.error("College index error:", error);
+      res.render("colleges", {
+        active: "colleges",
+        title: "Colleges",
+        error: "Failed to load colleges",
+        colleges: [],
+        user: { name: "Guest", role: "Unknown", initials: "G" }
+      });
+    }
+  },
+  
+
+  // Add college
+  addCollege: async (req, res) => {
+    try {
+      const { name, dean, description, established, email, phone } = req.body;
+      await College.create({ name, dean, description, established, email, phone });
+      res.send("✅ College data saved!");
+    } catch (error) {
+      console.error("Error adding college:", error);
+      res.status(500).send("❌ Failed to save college");
     }
   },
 
+  // Delete college
+  deleteCollege: async (req, res) => {
+    try {
+      const { id } = req.body;
+      await College.destroy({ where: { id } });
+      res.send("🗑️ College deleted!");
+    } catch (error) {
+      console.error("Error deleting college:", error);
+      res.status(500).send("❌ Failed to delete college");
+    }
+  },
+
+  // Get college for editing
+  getCollege: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const college = await College.findByPk(id);
+      if (!college) return res.status(404).json({ error: "Not found" });
+      res.json(college);
+    } catch (error) {
+      console.error("Error fetching college:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  },
+
+  // Update college
   updateCollege: async (req, res) => {
     try {
       const { id } = req.params;
-      const { name, dean, description } = req.body;
+      const { name, dean, description, established, email, phone } = req.body;
       const [updated] = await College.update(
-        { name, dean, description },
+        { name, dean, description, established, email, phone },
         { where: { id } }
       );
       if (updated) res.send("✅ College updated successfully");
@@ -72,6 +94,46 @@ const collegecontroller = {
     } catch (error) {
       console.error("Error updating college:", error);
       res.status(500).send("Internal Server Error");
+    }
+  },
+
+  // View college details
+  viewCollege: async (req, res) => {
+    try {
+      // Fetch user data
+      const user = await User.findByPk(req.session.userId, {
+        attributes: ['name', 'role']
+      });
+      if (!user) {
+        req.session.destroy();
+        return res.redirect("/login");
+      }
+      const initials = user.name.charAt(0).toUpperCase();
+
+      const college = await College.findByPk(req.params.id);
+      if (!college) return res.status(404).send("College not found");
+      const buildings = await Building.findAll({ where: { college_id: req.params.id }, order: [["name", "ASC"]] });
+      const totalBuildings = buildings.length;
+      const totalRooms = buildings.reduce((sum, b) => sum + (Number(b.totalrooms) || 0), 0);
+      res.render("college", {
+        active: "colleges",
+        title: "College Details",
+        college,
+        buildings,
+        stats: { totalBuildings, totalRooms },
+        user: { name: user.name, role: user.role, initials }
+      });
+    } catch (error) {
+      console.error("Error viewing college:", error);
+      res.render("college", {
+        active: "colleges",
+        title: "College Details",
+        error: "Failed to load college details",
+        college: null,
+        buildings: [],
+        stats: { totalBuildings: 0, totalRooms: 0 },
+        user: { name: "Guest", role: "Unknown", initials: "G" }
+      });
     }
   },
 };

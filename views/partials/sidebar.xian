@@ -1,60 +1,221 @@
-<aside id="sidebar" class="sidebar bg-white text-green-600 sidebar-transition w-64 p-4 flex flex-col border-r border-gray-200" aria-label="Sidebar">
-	<div class="flex items-center gap-3 mb-6 pb-3 border-b border-gray-200">
-			<img src="/logo.png" alt="MBC Logo" class="w-10 h-10 rounded-full object-cover" onerror="this.style.display='none'" />
-			<div>
-				<div class="text-[1.25rem] font-bold logo-text text-green-600">MBC University</div>
-				<div class="text-[.75rem] text-gray-500">Room Management</div>
-			</div>
-			<button id="collapseBtn" class="ml-auto text-green-600 bg-transparent focus:outline-none" title="Toggle sidebar">
-				<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-				</svg>
-			</button>
-		</div>
+<!-- Added mobile hamburger button  -->
+<button id="mobile-menu-btn" class="fixed top-4 left-4 z-50 md:hidden bg-white p-2 rounded-lg shadow-lg border border-gray-200 hover:bg-gray-50 transition-colors" aria-label="Toggle menu">
+  <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+  </svg>
+</button>
 
-		<nav class="space-y-1" role="navigation" aria-label="Primary">
-	<a href="/dashboard" class="flex items-center gap-3 px-3 py-2 rounded-md text-green-600 hover:bg-green-50 hover:scale-[1.02] transition-transform duration-150 ease-in-out {{#ifEquals active 'dashboard'}}bg-green-600 text-white{{else}}text-green-600{{/ifEquals}}" aria-current="{{#ifEquals active 'dashboard'}}page{{/ifEquals}}">
-		<span class="icon-only">
-		<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6"/></svg>
-		</span>
-		<svg class="w-5 h-5 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h7v7H3V3zm11 0h7v7h-7V3zM3 14h7v7H3v-7zm11 0h7v7h-7v-7z"/></svg>
-		<span class="sidebar-text">Dashboard</span>
-	</a>
+<aside id="sidebar" class="sidebar bg-white sidebar-transition flex flex-col border-r border-gray-200 shadow-md animate-fade-in w-64" aria-label="Sidebar">
+  <div class="p-5 border-b border-gray-100 flex justify-between items-center">
+    <div class="flex items-center gap-3 mb-1 transition-all duration-300">
+      <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-bold text-lg shadow-sm hover:shadow-lg transform hover:scale-105 transition-transform duration-300">
+        M
+      </div>
+      <div class="logo-text transition-all duration-300">
+        <div class="text-base font-semibold text-gray-900">MBC University</div>
+        <div class="text-xs text-gray-500 font-normal">Room Management</div>
+      </div>
+    </div>
+     <!-- Desktop toggle button (hidden on mobile)  -->
+    <button id="sidebar-toggle" class="hidden md:block text-gray-600 hover:text-emerald-600 focus:outline-none" aria-label="Toggle sidebar">
+      <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path class="sidebar-toggle-icon" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+     <!-- Mobile close button  -->
+    <button id="mobile-close-btn" class="md:hidden text-gray-600 hover:text-emerald-600 focus:outline-none" aria-label="Close menu">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
 
-	<a href="/colleges" class="flex items-center gap-3 px-3 py-2 rounded-md text-green-600 hover:bg-green-50 hover:scale-[1.02] transition-transform duration-150 ease-in-out {{#ifEquals active 'colleges'}}bg-green-600 text-white{{else}}text-green-600{{/ifEquals}}" aria-current="{{#ifEquals active 'colleges'}}page{{/ifEquals}}">
-		<svg class="w-5 h-5 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3l9 5-9 5-9-5 9-5zm0 7l6.5-3.61V14a2 2 0 01-2 2H7.5a2 2 0 01-2-2V6.39L12 10z"/></svg>
-		<span class="sidebar-text">Colleges</span>
-	</a>
+  <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto" role="navigation" aria-label="Primary">
+    <a href="/dashboard" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 {{#ifEquals active 'dashboard'}}active-link{{/ifEquals}} hover:bg-gradient-to-r hover:from-emerald-100 hover:to-teal-100 hover:text-emerald-800 transition-all duration-300 transform hover:scale-102" aria-current="{{#ifEquals active 'dashboard'}}page{{/ifEquals}}">
+      <span class="flex items-center gap-2">
+        <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <rect x="3" y="3" width="7" height="7" rx="1"/>
+          <rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="3" y="14" width="7" height="7" rx="1"/>
+          <rect x="14" y="14" width="7" height="7" rx="1"/>
+        </svg>
+        {{#ifEquals active 'dashboard'}}
+          <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+        {{/ifEquals}}
+      </span>
+      <span class="sidebar-text">Dashboard</span>
+    </a>
 
-	<a href="/buildings" class="flex items-center gap-3 px-3 py-2 rounded-md text-green-600 hover:bg-green-50 hover:scale-[1.02] transition-transform duration-150 ease-in-out {{#ifEquals active 'buildings'}}bg-green-600 text-white{{else}}text-green-600{{/ifEquals}}" aria-current="{{#ifEquals active 'buildings'}}page{{/ifEquals}}">
-		<svg class="w-5 h-5 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 21h16V3H4v18zm4-10h2v2H8v-2zm0 4h2v2H8v-2zm4-4h2v2h-2v-2zm0 4h2v2h-2v-2z"/></svg>
-		<span class="sidebar-text">Buildings</span>
-	</a>
+    <a href="/colleges" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 {{#ifEquals active 'colleges'}}active-link{{/ifEquals}} hover:bg-gradient-to-r hover:from-emerald-100 hover:to-teal-100 hover:text-emerald-800 transition-all duration-300 transform hover:scale-102" aria-current="{{#ifEquals active 'colleges'}}page{{/ifEquals}}">
+      <span class="flex items-center gap-2">
+        <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M12 3L2 8l10 5 10-5-10-5z"/>
+          <path d="M2 13l10 5 10-5"/>
+          <path d="M2 18l10 5 10-5"/>
+        </svg>
+        {{#ifEquals active 'colleges'}}
+          <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+        {{/ifEquals}}
+      </span>
+      <span class="sidebar-text">Colleges</span>
+    </a>
 
-	<a href="/rooms" class="flex items-center gap-3 px-3 py-2 rounded-md text-green-600 hover:bg-green-50 hover:scale-[1.02] transition-transform duration-150 ease-in-out {{#ifEquals active 'rooms'}}bg-green-600 text-white{{else}}text-green-600{{/ifEquals}}" aria-current="{{#ifEquals active 'rooms'}}page{{/ifEquals}}">
-		<svg class="w-5 h-5 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4h16v16H4V4zm10 8a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-		<span class="sidebar-text">Rooms</span>
-	</a>
+    <a href="/buildings" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 {{#ifEquals active 'buildings'}}active-link{{/ifEquals}} hover:bg-gradient-to-r hover:from-emerald-100 hover:to-teal-100 hover:text-emerald-800 transition-all duration-300 transform hover:scale-102" aria-current="{{#ifEquals active 'buildings'}}page{{/ifEquals}}">
+      <span class="flex items-center gap-2">
+        <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <rect x="4" y="2" width="16" height="20" rx="1"/>
+          <path d="M9 6h2M9 10h2M9 14h2M13 6h2M13 10h2M13 14h2"/>
+        </svg>
+        {{#ifEquals active 'buildings'}}
+          <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+        {{/ifEquals}}
+      </span>
+      <span class="sidebar-text">Buildings</span>
+    </a>
 
-	<a href="/schedules" class="flex items-center gap-3 px-3 py-2 rounded-md text-green-600 hover:bg-green-50 hover:scale-[1.02] transition-transform duration-150 ease-in-out {{#ifEquals active 'schedules'}}bg-green-600 text-white{{else}}text-green-600{{/ifEquals}}" aria-current="{{#ifEquals active 'schedules'}}page{{/ifEquals}}">
-		<svg class="w-5 h-5 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3M3 8h18M5 12h14M5 16h10"/></svg>
-		<span class="sidebar-text">Schedules</span>
-	</a>
+    <a href="/rooms" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 {{#ifEquals active 'rooms'}}active-link{{/ifEquals}} hover:bg-gradient-to-r hover:from-emerald-100 hover:to-teal-100 hover:text-emerald-800 transition-all duration-300 transform hover:scale-102" aria-current="{{#ifEquals active 'rooms'}}page{{/ifEquals}}">
+      <span class="flex items-center gap-2">
+        <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <rect x="3" y="3" width="18" height="18" rx="2"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
+        {{#ifEquals active 'rooms'}}
+          <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+        {{/ifEquals}}
+      </span>
+      <span class="sidebar-text">Rooms</span>
+    </a>
 
-	<a href="/settings" class="flex items-center gap-3 px-3 py-2 rounded-md text-green-600 hover:bg-green-50 hover:scale-[1.02] transition-transform duration-150 ease-in-out {{#ifEquals active 'settings'}}bg-green-600 text-white{{else}}text-green-600{{/ifEquals}}" aria-current="{{#ifEquals active 'settings'}}page{{/ifEquals}}">
-		<svg class="w-5 h-5 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.05 2.5h1.9l.5 2a7.5 7.5 0 011.73.72l1.86-.78 1.34 1.34-.78 1.86c.27.55.51 1.13.72 1.73l2 .5v1.9l-2 .5a7.5 7.5 0 01-.72 1.73l.78 1.86-1.34 1.34-1.86-.78a7.5 7.5 0 01-1.73.72l-.5 2h-1.9l-.5-2a7.5 7.5 0 01-1.73-.72l-1.86.78-1.34-1.34.78-1.86a7.5 7.5 0 01-.72-1.73l-2-.5v-1.9l2-.5c.2-.6.45-1.18.72-1.73l-.78-1.86L6.46 4.44l1.86.78c.55-.27 1.13-.51 1.73-.72l.5-2zM12 15a3 3 0 100-6 3 3 0 000 6z"/></svg>
-		<span class="sidebar-text">Settings</span>
-	</a>
-	</nav>
-        <div class="mt-auto pt-4 border-t border-gray-200">
-            <div class="flex items-center gap-3" aria-live="polite">
-				<div class="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center text-sm font-semibold text-green-600">{{#if userInitials}}{{userInitials}}{{else}}JD{{/if}}</div>
-				<div class="leading-tight">
-					<div class="font-semibold text-green-600">{{#if userName}}{{userName}}{{else}}Jane Doe{{/if}}</div>
-					<div class="text-xs text-gray-500">{{#if userRole}}{{userRole}}{{else}}Admin{{/if}}</div>
-				</div>
-			</div>
-		</div>
-	</aside>
+    <a href="/schedules" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 {{#ifEquals active 'schedules'}}active-link{{/ifEquals}} hover:bg-gradient-to-r hover:from-emerald-100 hover:to-teal-100 hover:text-emerald-800 transition-all duration-300 transform hover:scale-102" aria-current="{{#ifEquals active 'schedules'}}page{{/ifEquals}}">
+      <span class="flex items-center gap-2">
+        <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <rect x="3" y="4" width="18" height="18" rx="2"/>
+          <path d="M16 2v4M8 2v4M3 10h18"/>
+        </svg>
+        {{#ifEquals active 'schedules'}}
+          <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+        {{/ifEquals}}
+      </span>
+      <span class="sidebar-text">Schedules</span>
+    </a>
 
-<main class="flex-1 p-6">
+    <a href="/settings" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 {{#ifEquals active 'settings'}}active-link{{/ifEquals}} hover:bg-gradient-to-r hover:from-emerald-100 hover:to-teal-100 hover:text-emerald-800 transition-all duration-300 transform hover:scale-102" aria-current="{{#ifEquals active 'settings'}}page{{/ifEquals}}">
+      <span class="flex items-center gap-2">
+        <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M12 1v6m0 6v6M4.22 4.22l4.24 4.24m5.08 5.08l4.24 4.24M1 12h6m6 0h6M4.22 19.78l4.24-4.24m5.08-5.08l4.24-4.24"/>
+        </svg>
+        {{#ifEquals active 'settings'}}
+          <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+        {{/ifEquals}}
+      </span>
+      <span class="sidebar-text">Settings</span>
+    </a>
+  </nav>
+
+  <div class="p-4 border-t border-gray-100 hover:shadow-md transition-all duration-300 relative">
+    <button class="w-full flex items-center gap-3 transition-all duration-300 transform hover:scale-102 focus:outline-none" aria-haspopup="true" aria-expanded="false" id="user-menu-button" aria-label="User menu">
+      <div class="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-sm font-semibold text-white flex-shrink-0 shadow-sm hover:shadow-lg">
+        {{user.initials}}
+      </div>
+      <div class="leading-tight min-w-0 logo-text transition-all duration-300">
+        <div class="font-medium text-sm text-gray-900 truncate hover:text-emerald-600">{{user.name}}</div>
+        <div class="text-xs text-gray-500">{{user.role}}</div>
+      </div>
+    </button>
+    <div class="absolute bottom-16 left-4 w-48 bg-white border border-gray-200 rounded-lg shadow-lg hidden" id="user-menu" role="menu" aria-labelledby="user-menu-button">
+      <a href="/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-emerald-100 hover:text-emerald-800 transition-all duration-200" role="menuitem">Logout</a>
+    </div>
+  </div>
+</aside>
+
+<style>
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+  .animate-pulse {
+    animation: pulse 1.5s infinite;
+  }
+
+  .active-link {
+    background: linear-gradient(to right, #10B981, #065F46);
+    color: white !important;
+    font-weight: 600;
+    position: relative;
+  }
+  .active-link .sidebar-text {
+    color: white !important;
+  }
+  .active-link svg {
+    stroke: white !important;
+  }
+</style>
+
+<script>
+  const sidebar = document.getElementById('sidebar');
+  const mobileOverlay = document.getElementById('mobile-overlay');
+  const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+  const mobileCloseBtn = document.getElementById('mobile-close-btn');
+  const toggleButton = document.getElementById('sidebar-toggle');
+
+  // Desktop sidebar toggle
+  toggleButton?.addEventListener('click', () => {
+    document.getElementById('app-shell').classList.toggle('sidebar-collapsed');
+    localStorage.setItem('sidebarCollapsed', document.getElementById('app-shell').classList.contains('sidebar-collapsed'));
+  });
+
+  // Mobile menu open
+  mobileMenuBtn?.addEventListener('click', () => {
+    sidebar.classList.add('mobile-open');
+    mobileOverlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  });
+
+  // Mobile menu close
+  function closeMobileMenu() {
+    sidebar.classList.remove('mobile-open');
+    mobileOverlay.classList.remove('active');
+    document.body.style.overflow = 'auto';
+  }
+
+  mobileCloseBtn?.addEventListener('click', closeMobileMenu);
+  mobileOverlay?.addEventListener('click', closeMobileMenu);
+
+  // Close mobile menu when clicking nav links
+  document.querySelectorAll('.sidebar a').forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth < 768) {
+        closeMobileMenu();
+      }
+    });
+  });
+
+  // Restore sidebar state on page load (desktop only)
+  if (window.innerWidth >= 768 && localStorage.getItem('sidebarCollapsed') === 'true') {
+    document.getElementById('app-shell').classList.add('sidebar-collapsed');
+  }
+
+  // User menu functionality
+  document.getElementById('user-menu-button')?.addEventListener('click', function () {
+    const menu = document.getElementById('user-menu');
+    menu.classList.toggle('hidden');
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', function (event) {
+    const button = document.getElementById('user-menu-button');
+    const menu = document.getElementById('user-menu');
+    if (button && menu && !button.contains(event.target) && !menu.contains(event.target)) {
+      menu.classList.add('hidden');
+    }
+  });
+</script>

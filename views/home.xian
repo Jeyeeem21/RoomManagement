@@ -1,8 +1,138 @@
-{{> head }}
-{{> sidebar }}
-  <div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold text-center mt-10">Welcome to XianFire 🔥</h1>
-    <p class="text-center mt-4">Home Page</p>
-    
+{{> head title="MinSu Home"}}
+
+<main class="min-h-screen flex flex-col bg-gradient-to-br from-emerald-700 via-teal-600 to-blue-800 text-white overflow-hidden">
+  <!-- Hero Section -->
+  <div class="flex-grow flex flex-col items-center justify-center p-4 md:p-8 relative">
+    <!-- Background Overlay and Particles -->
+    <div class="absolute inset-0 bg-black/30 backdrop-blur-sm z-0"></div>
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute -top-40 -left-40 w-80 h-80 bg-emerald-500/15 rounded-full blur-3xl animate-pulse-slow"></div>
+      <div class="absolute bottom-20 right-20 w-96 h-96 bg-teal-500/15 rounded-full blur-3xl animate-pulse-slow delay-1000"></div>
+      <div class="absolute top-1/2 left-1/4 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl animate-float"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="w-full max-w-7xl mx-auto flex items-center justify-between mb-10 md:mb-16 animate-slide-in relative z-10">
+      <div class="flex items-center gap-6 md:gap-8">
+        {{#if content.logo}}
+        <img src="{{content.logo}}" alt="{{content.name}} logo" class="w-24 h-24 md:w-32 md:h-32 object-contain rounded-full shadow-xl border-4 border-white/40 animate-logo-spin" onerror="this.src='/uploads/fallback-logo.png'">
+        {{else}}
+        <img src="/Uploads/fallback-logo.png" alt="Default logo" class="w-24 h-24 md:w-32 md:h-32 object-contain rounded-full shadow-xl border-4 border-white/40 animate-logo-spin">
+        {{/if}}
+        <div class="overflow-hidden">
+          <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight drop-shadow-2xl inline-block animate-spell-alternate">
+            {{#if content}}{{content.name}}{{else}}Welcome to XianFire 🔥{{/if}}
+          </h1>
+        </div>
+      </div>
+      <a href="/login" class="inline-flex items-center px-6 py-3 bg-emerald-600/90 text-white text-sm md:text-base font-semibold rounded-full hover:bg-emerald-700/90 hover:shadow-[0_0_20px_rgba(16,185,129,0.8)] transition-all duration-300 backdrop-blur-lg border border-white/30 shadow-lg animate-pulse-glow">
+        Login
+      </a>
+    </header>
+
+    <!-- Error Message -->
+    {{#if error}}
+    <div class="w-full max-w-4xl mx-auto bg-red-500/20 backdrop-blur-md border border-red-400/40 text-red-100 px-6 py-4 rounded-lg mb-10 animate-pulse relative z-10">
+      <p>{{error}}</p>
+    </div>
+    {{/if}}
+
+    <!-- Content Section -->
+    <div class="w-full max-w-4xl mx-auto relative z-10 animate-fade-up" data-parallax>
+      {{#if content}}
+      <div class="bg-white/15 backdrop-blur-xl border border-white/30 rounded-2xl p-10 md:p-16 text-center shadow-2xl hover:shadow-[0_0_25px_rgba(255,255,255,0.4)] transition-all duration-500 transform hover:scale-105">
+        <p class="text-xl md:text-2xl text-white leading-relaxed drop-shadow-md font-light">{{content.content}}</p>
+      </div>
+      {{else}}
+      <div class="bg-white/15 backdrop-blur-xl border border-white/30 rounded-2xl p-10 md:p-16 text-center shadow-2xl">
+        <p class="text-xl md:text-2xl text-white leading-relaxed drop-shadow-md font-light">No content available at the moment.</p>
+      </div>
+      {{/if}}
+    </div>
   </div>
-{{> footer }}
+</main>
+
+<script>
+// Simple parallax effect
+window.addEventListener('scroll', () => {
+  const parallaxElements = document.querySelectorAll('[data-parallax]');
+  parallaxElements.forEach(el => {
+    const speed = 0.2;
+    const yPos = window.pageYOffset * speed;
+    el.style.transform = `translateY(${yPos}px)`;
+  });
+});
+</script>
+
+<style>
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-slide-in {
+    animation: slideIn 1s ease-out;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(50px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-up {
+    animation: fadeUp 1.2s ease-out;
+  }
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+    100% { transform: scale(1); }
+  }
+  .animate-pulse {
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulseSlow {
+    0% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.15); }
+    100% { opacity: 0.5; transform: scale(1); }
+  }
+  .animate-pulse-slow {
+    animation: pulseSlow 8s infinite;
+  }
+  .delay-1000 {
+    animation-delay: 1s;
+  }
+  @keyframes float {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+    100% { transform: translateY(0); }
+  }
+  .animate-float {
+    animation: float 6s infinite ease-in-out;
+  }
+  @keyframes logoSpin {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(10deg) scale(1.05); }
+    100% { transform: rotate(0deg) scale(1); }
+  }
+  .animate-logo-spin {
+    animation: logoSpin 5s infinite ease-in-out;
+  }
+  @keyframes spellAlternate {
+    0% { width: 0; opacity: 1; }
+    40% { width: 100%; opacity: 1; }
+    50% { width: 100%; opacity: 1; }
+    90% { width: 0; opacity: 1; }
+    100% { width: 0; opacity: 1; }
+  }
+  .animate-spell-alternate {
+    overflow: hidden;
+    white-space: nowrap;
+    display: inline-block;
+    animation: spellAlternate 8s steps(40) infinite normal;
+  }
+  @keyframes pulseGlow {
+    0% { box-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
+    50% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.8); }
+    100% { box-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
+  }
+  .animate-pulse-glow {
+    animation: pulseGlow 2s infinite;
+  }
+</style>

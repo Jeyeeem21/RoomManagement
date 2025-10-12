@@ -25,7 +25,7 @@
   // Firebase doesn't require predefined models.
   // Use Firestore directly in controllers or create helper functions here.
   // Collection name: "building"
-
+//models/Building.js
  import { DataTypes } from "sequelize";
 import { sequelize } from "./db.js";
 
@@ -34,6 +34,10 @@ export const Building = sequelize.define("buildings", {
   name: { type: DataTypes.STRING, allowNull: false },
   location: { type: DataTypes.STRING, allowNull: true },
   description: { type: DataTypes.STRING, allowNull: true },
+  floors: { type: DataTypes.INTEGER, allowNull: true },
+  totalrooms: { type: DataTypes.INTEGER, allowNull: true },
+  built_year: { type: DataTypes.INTEGER, allowNull: true },
+  status: { type: DataTypes.STRING, allowNull: true },
 });
 
 export { sequelize };

@@ -1,84 +1,408 @@
-{{> head title="Rooms" }}
-{{> sidebar }}
+{{> head title="Rooms"}}
+{{> sidebar active=active user=user}}
 
-<div class="flex items-center justify-between mb-6">
-  <div>
-    <nav class="text-sm text-gray-600">Home / Rooms</nav>
-    <h2 class="text-2xl font-semibold text-[#344158]">Rooms</h2>
+<main class="main-content min-h-screen p-8">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <nav class="text-sm text-slate-600">Home / Rooms</nav>
+      <h2 class="text-2xl font-semibold text-slate-900">Rooms</h2>
+    </div>
   </div>
-  <div></div>
-</div>
 
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-  <div class="lg:col-span-1 bg-white rounded shadow p-4">
-    <h3 class="font-semibold text-[#344158] mb-3">Add / Edit Room</h3>
-    <form class="space-y-3">
-      <div>
-        <label class="block text-sm text-gray-700">Room Name</label>
-        <input class="w-full border rounded px-3 py-2" placeholder="e.g., Room 101" />
-      </div>
-      <div>
-        <label class="block text-sm text-gray-700">Building</label>
-        <select class="w-full border rounded px-3 py-2">
-          <option>Science Building A</option>
-          <option>Engineering Building B</option>
-        </select>
-      </div>
-      <div class="grid grid-cols-2 gap-3">
-        <div>
-          <label class="block text-sm text-gray-700">Capacity</label>
-          <input type="number" class="w-full border rounded px-3 py-2" value="40" />
-        </div>
-        <div>
-          <label class="block text-sm text-gray-700">Status</label>
-          <select class="w-full border rounded px-3 py-2">
-            <option>Available</option>
-            <option>Occupied</option>
-            <option>Maintenance</option>
+  <div class="grid grid-cols-1 gap-6">
+    <!-- Trigger and table container -->
+    <div class="lg:col-span-2 bg-white rounded-lg border border-slate-200 overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+        <div class="font-semibold text-slate-900">Rooms</div>
+        <div class="flex items-center gap-3">
+          <input id="roomsSearch" type="text" placeholder="Search rooms" class="px-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent" />
+          <select id="roomsBuildingFilter" class="px-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
+            <option value="">All Buildings</option>
+            {{#each buildings}}
+              <option value="{{name}}">{{name}}</option>
+            {{/each}}
           </select>
+          <button id="openRoomModal" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium">Add Room</button>
         </div>
       </div>
-      <div class="flex items-center gap-3">
-        <button class="px-4 py-2 bg-[#28A745] text-white rounded">Save</button>
-        <button type="reset" class="px-4 py-2 bg-gray-100 text-[#344158] rounded">Clear</button>
-      </div>
-    </form>
-  </div>
-
-  <div class="lg:col-span-2 bg-white rounded shadow overflow-hidden">
-    <div class="p-3 border-b flex items-center justify-between">
-      <div class="font-medium text-[#344158]">Rooms</div>
-      <div class="flex items-center gap-3">
-        <input type="text" placeholder="Search by building or availability" class="px-3 py-2 border rounded" />
-        <select class="px-3 py-2 border rounded">
-          <option>All Buildings</option>
-          <option>Science Building A</option>
-        </select>
+      <div class="overflow-x-auto">
+        <table id="roomsTable" class="w-full text-left">
+          <thead class="bg-slate-50 border-b border-slate-200">
+            <tr>
+              <th class="px-6 py-3 text-xs font-medium text-slate-700 uppercase tracking-wider">Room Name</th>
+              <th class="px-6 py-3 text-xs font-medium text-slate-700 uppercase tracking-wider">Building</th>
+              <th class="px-6 py-3 text-xs font-medium text-slate-700 uppercase tracking-wider">Capacity</th>
+              <th class="px-6 py-3 text-xs font-medium text-slate-700 uppercase tracking-wider">Type</th>
+              <th class="px-6 py-3 text-xs font-medium text-slate-700 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200">
+            {{#each rooms}}
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td class="px-6 py-4 text-slate-900 font-medium">{{name}}</td>
+              <td class="px-6 py-4 text-slate-600">{{building_name}}</td>
+              <td class="px-6 py-4 text-slate-600">{{capacity}}</td>
+              <td class="px-6 py-4 text-slate-600">{{type}}</td>
+              <td class="px-6 py-4">
+                <button onclick="editRoom('{{id}}')" class="text-emerald-600 hover:text-emerald-700 mr-3" title="Edit" aria-label="Edit">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5h2m-1 14v-6m0 0l6-6a2 2 0 10-3-3l-6 6v3h3z"/></svg>
+                </button>
+                <button onclick="deleteRoom('{{id}}')" class="text-red-600 hover:text-red-700" title="Delete" aria-label="Delete">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 7h12M9 7V5a2 2 0 012-2h2a2 2 0 012 2v2m-8 0v12a2 2 0 002 2h4a2 2 0 002-2V7"/></svg>
+                </button>
+              </td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
       </div>
     </div>
-    <table class="w-full text-left">
-      <thead class="bg-[#344158] text-white">
-        <tr>
-          <th class="p-3">Room Name</th>
-          <th class="p-3">Building</th>
-          <th class="p-3">Capacity</th>
-          <th class="p-3">Status</th>
-          <th class="p-3">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="border-b">
-          <td class="p-3">Room 101</td>
-          <td class="p-3">Science Building A</td>
-          <td class="p-3">40</td>
-          <td class="p-3"><span class="px-2 py-1 bg-[#28A745] text-white rounded text-xs">Available</span></td>
-          <td class="p-3"><button class="text-[#28A745] mr-2">Edit</button><button class="text-[#FFD700]">Delete</button></td>
-        </tr>
-      </tbody>
-    </table>
+
+    <!-- Modal -->
+    <div id="roomModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden backdrop-blur-sm">
+      <div class="bg-white rounded-xl shadow-2xl w-11/12 md:w-2/3 lg:w-1/2 max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div class="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between">
+          <h3 class="text-xl font-semibold text-slate-900">Add / Edit Room</h3>
+          <button id="closeRoomModal" class="text-slate-400 hover:text-slate-600 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <form id="roomForm" class="p-6 space-y-4" method="POST">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Room Name</label>
+            <input id="roomName" name="name" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent" placeholder="e.g., Room 101" required />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Building</label>
+            <select id="roomBuilding" name="building_id" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent" required>
+              <option disabled selected>Select Building</option>
+              {{#each buildings}}
+                <option value="{{id}}" data-totalrooms="{{totalrooms}}" data-currentrooms="{{current_rooms}}">
+                  {{name}} 
+                  {{#if totalrooms}}
+                    ({{current_rooms}}/{{totalrooms}} rooms)
+                  {{else}}
+                    ({{current_rooms}} rooms)
+                  {{/if}}
+                </option>
+              {{/each}}
+            </select>
+            <div id="buildingCapacityInfo" class="mt-1 text-xs text-slate-500 hidden"></div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1">Capacity</label>
+              <input id="roomCapacity" name="capacity" type="number" min="0" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent" required />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1">Type</label>
+              <input id="roomType" name="type" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent" placeholder="e.g., Computer Lab" />
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Description</label>
+            <input id="roomDescription" name="description" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent" />
+          </div>
+          <div class="flex items-center justify-end gap-3 pt-2">
+            <button type="button" id="cancelRoom" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-medium transition-colors">Cancel</button>
+            <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
-</div>
+</main>
 
-<!-- Modal placeholder -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // DataTable init
+  if (window.jQuery && $.fn.DataTable) {
+    const dt = $('#roomsTable').DataTable({
+      pageLength: 10,
+      order: [[0, 'asc']],
+      lengthMenu: [[10, 25, 50, -1], [10, 25, 50, 'All']],
+      columnDefs: [
+        { targets: 2, type: 'num' } // Capacity numeric sort
+      ],
+      dom: 't<"flex items-center justify-between px-6 py-3"lip>'
+    });
 
-{{> footer }}
+    // Custom search bar
+    const searchInput = document.getElementById('roomsSearch');
+    searchInput?.addEventListener('input', (e) => {
+      dt.search(e.target.value).draw();
+    });
+
+    // Building filter (column 1: Building)
+    const buildingFilter = document.getElementById('roomsBuildingFilter');
+    buildingFilter?.addEventListener('change', (e) => {
+      const val = e.target.value;
+      dt.column(1).search(val ? '^' + $.fn.dataTable.util.escapeRegex(val) + '$' : '', true, false).draw();
+    });
+  }
+
+  const modal = document.getElementById('roomModal');
+  const openBtn = document.getElementById('openRoomModal');
+  const closeBtn = document.getElementById('closeRoomModal');
+  const cancelBtn = document.getElementById('cancelRoom');
+  const form = document.getElementById('roomForm');
+  let editMode = false;
+  let editId = null;
+
+  function openModal() {
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    modal.classList.add('hidden');
+    document.body.style.overflow = 'auto';
+    form.reset();
+    editMode = false;
+    editId = null;
+    form.setAttribute('action', '/rooms/add');
+  }
+
+  [closeBtn, cancelBtn].forEach(b => b?.addEventListener('click', closeModal));
+  openBtn?.addEventListener('click', () => {
+    document.querySelector('#roomModal h3').textContent = 'Add Room';
+    form.setAttribute('action', '/rooms/add');
+    openModal();
+  });
+  modal?.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+
+  // Building capacity validation
+  const buildingSelect = document.getElementById('roomBuilding');
+  const capacityInfo = document.getElementById('buildingCapacityInfo');
+  
+  buildingSelect?.addEventListener('change', (e) => {
+    const selectedOption = e.target.selectedOptions[0];
+    if (!selectedOption || selectedOption.value === '') {
+      capacityInfo.classList.add('hidden');
+      return;
+    }
+    
+    const totalRooms = selectedOption.dataset.totalrooms;
+    const currentRooms = selectedOption.dataset.currentrooms;
+    
+    if (totalRooms && totalRooms !== 'null' && totalRooms !== 'undefined') {
+      const total = parseInt(totalRooms);
+      const current = parseInt(currentRooms);
+      const remaining = total - current;
+      
+      if (remaining <= 0) {
+        capacityInfo.textContent = `⚠️ This building is at full capacity (${current}/${total} rooms)`;
+        capacityInfo.className = 'mt-1 text-xs text-red-600';
+        capacityInfo.classList.remove('hidden');
+      } else {
+        capacityInfo.textContent = `✅ ${remaining} room(s) available (${current}/${total} rooms used)`;
+        capacityInfo.className = 'mt-1 text-xs text-green-600';
+        capacityInfo.classList.remove('hidden');
+      }
+    } else {
+      capacityInfo.textContent = `📊 ${currentRooms} room(s) currently in this building`;
+      capacityInfo.className = 'mt-1 text-xs text-slate-500';
+      capacityInfo.classList.remove('hidden');
+    }
+  });
+
+  // Submit
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(form).entries());
+    try {
+      const url = editMode ? `/rooms/update/${editId}` : '/rooms/add';
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      const result = await res.json();
+      if (result.error) throw new Error(result.error);
+      Swal.fire({ icon: 'success', title: 'Success', text: result.message, timer: 1200, showConfirmButton: false });
+      closeModal();
+      setTimeout(() => location.reload(), 1200);
+    } catch(err) {
+      Swal.fire({ icon: 'error', title: 'Error', text: err.message || 'Failed to save room' });
+    }
+  });
+    /* ===========================
+   BUILDING MODAL KEYBOARD SHORTCUTS
+   =========================== */
+document.addEventListener('keydown', (event) => {
+  const modal = document.getElementById('roomModal');
+  const form = document.getElementById('roomForm');
+  const isModalOpen = !modal.classList.contains('hidden');
+
+  // === Ctrl + Enter → Open modal & focus Room Name ===
+  if (event.ctrlKey && event.key === 'Enter') {
+    event.preventDefault();
+    openModal();
+    setTimeout(() => {
+      document.getElementById('roomName')?.focus();
+    }, 100);
+  }
+
+  // === Enter → Move to next input field ===
+ if (event.key === 'Enter' && !event.ctrlKey && isModalOpen) {
+  const active = document.activeElement;
+  const inputs = Array.from(form.querySelectorAll('input, select, textarea, button'));
+  const index = inputs.indexOf(active);
+
+  // ✅ Special handling for <select>
+  if (active && active.tagName === 'SELECT') {
+    const hasValue = active.value && active.value.trim() !== 'Select Building' && active.value.trim() !== '';
+
+    if (!hasValue) {
+      // If no value yet, allow default Enter (opens dropdown)
+      return;
+    } else {
+      // If value already selected, move to next field
+      event.preventDefault();
+      if (index > -1 && index < inputs.length - 1) {
+        inputs[index + 1].focus();
+      } else if (index === inputs.length - 1) {
+        form.requestSubmit();
+      }
+      return;
+    }
+  }
+
+  // ✅ For all other input types
+  if (index > -1 && index < inputs.length - 1) {
+    event.preventDefault();
+    inputs[index + 1].focus();
+  } else if (index === inputs.length - 1) {
+    event.preventDefault();
+    form.requestSubmit();
+  }
+}
+
+  // === Ctrl + D → Clear all fields ===
+  if (event.ctrlKey && event.key.toLowerCase() === 'd' && isModalOpen) {
+    event.preventDefault();
+    form.reset();
+    document.getElementById('roomName')?.focus();
+    Swal.fire({
+      toast: true,
+      position: 'bottom-end',
+      icon: 'info',
+      title: 'All fields cleared.',
+      showConfirmButton: false,
+      timer: 1200
+    });
+  }
+
+  // === Esc → Clear only current textbox ===
+  if (!event.ctrlKey && event.key === 'Escape' && isModalOpen) {
+    const active = document.activeElement;
+    if (active && active.tagName === 'INPUT') {
+      event.preventDefault();
+      active.value = '';
+      Swal.fire({
+        toast: true,
+        position: 'bottom-end',
+        icon: 'info',
+        title: 'Textbox cleared.',
+        showConfirmButton: false,
+        timer: 800
+      });
+    }
+  }
+
+  // === Ctrl + B → Cancel / Close modal ===
+  if (event.ctrlKey && event.key.toLowerCase() === 'b' && isModalOpen) {
+    event.preventDefault();
+    closeModal();
+    Swal.fire({
+      toast: true,
+      position: 'bottom-end',
+      icon: 'warning',
+      title: 'Modal closed.',
+      showConfirmButton: false,
+      timer: 1000
+    });
+  }
+});
+
+
+  // Edit
+  window.editRoom = async function(id) {
+    try {
+      const res = await fetch(`/rooms/get/${id}`);
+      const data = await res.json();
+      if (!data || data.error) throw new Error('Not found');
+      document.getElementById('roomName').value = data.name || '';
+      document.getElementById('roomBuilding').value = data.building_id || '';
+      document.getElementById('roomCapacity').value = data.capacity || '';
+      document.getElementById('roomType').value = data.type || '';
+      document.getElementById('roomDescription').value = data.description || '';
+      document.querySelector('#roomModal h3').textContent = 'Edit Room';
+      editMode = true;
+      editId = id;
+      form.setAttribute('action', `/rooms/update/${id}`);
+      
+      // Trigger building change event to show capacity info
+      const buildingSelect = document.getElementById('roomBuilding');
+      if (buildingSelect) {
+        buildingSelect.dispatchEvent(new Event('change'));
+      }
+      
+      openModal();
+    } catch(err) {
+      Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to load room' });
+    }
+  }
+
+  // Delete
+  window.deleteRoom = async function(id) {
+    const confirm = await Swal.fire({ title: 'Are you sure?', text: 'This room will be deleted permanently.', icon: 'warning', showCancelButton: true });
+    if (!confirm.isConfirmed) return;
+    try {
+      const res = await fetch('/rooms/delete', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });
+      const result = await res.json();
+      if (result.error) throw new Error(result.error);
+      Swal.fire({ icon: 'success', title: 'Deleted', text: result.message, timer: 1200, showConfirmButton: false });
+      setTimeout(() => location.reload(), 1200);
+    } catch(err) {
+      Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to delete room' });
+    }
+  }
+});
+ document.addEventListener('keydown', (event) => {
+  if (event.ctrlKey && event.altKey) {
+    switch (event.key.toLowerCase()) {
+      case 'c': // Ctrl + Alt + C → Add College
+        window.location.href = '/colleges';
+        break;
+      case 'b': // Ctrl + Alt + B → Add Building
+        window.location.href = '/buildings';
+        break;
+      case 'r': // Ctrl + Alt + R → Add Room
+        window.location.href = '/rooms';
+        break;
+      case 's': // Ctrl + Alt + S → Add Schedule
+        window.location.href = '/schedules';
+        break;
+      case 'd': // Ctrl + Alt + D → Go to Dashboard
+        window.location.href = '/dashboard';
+        break;
+       case 'l': // Ctrl + Alt + L → Go to Logout
+        window.location.href = '/logout';
+        break;
+      case 'a': // Ctrl + Alt + A → Go to Home
+        window.location.href = '/settings';
+        break;
+      default:
+        return;
+    }
+
+    // Prevent default browser actions (optional)
+    event.preventDefault();
+  }
+});
+</script>
+
+{{> footer}}

@@ -1,0 +1,358 @@
+{{> head title=building.name }}
+{{> sidebar }}
+
+<main class="main-content min-h-screen p-8" style="background: linear-gradient(135deg, #e6f0ea 0%, var(--bg-light) 100%);">
+  <div class="max-w-7xl mx-auto">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h1 class="text-3xl font-semibold text-[--primary]">{{building.name}}</h1>
+        <p class="text-sm text-gray-600">{{building.college_name}}</p>
+      </div>
+      <div class="flex items-center gap-4">
+        {{#if building.status}}
+        <span class="px-3 py-1 text-sm rounded-full bg-emerald-50 text-[--accent] border border-[--border]">{{building.status}}</span>
+        {{/if}}
+        <a href="/buildings" class="px-4 py-2 bg-[--accent] hover:bg-emerald-700 text-white rounded-lg font-medium text-sm transition-colors">
+          ← Back to Buildings
+        </a>
+      </div>
+    </div>
+
+    {{#if building.description}}
+    <p class="text-gray-700 mb-6">{{building.description}}</p>
+    {{/if}}
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Building Information -->
+      <div class="lg:col-span-2 bg-white rounded-xl border border-[--border] hover:border-[--accent] transition-all duration-300 hover:shadow-md p-6">
+        <h2 class="text-lg font-semibold text-[--primary] mb-4">Building Information</h2>
+        <div class="grid grid-cols-2 gap-4 text-sm text-gray-700">
+          <div>
+            <div class="text-gray-500 text-xs font-medium uppercase tracking-wide mb-1">Floors</div>
+            <div class="font-medium text-[--primary]">{{building.floors}}</div>
+          </div>
+          <div>
+            <div class="text-gray-500 text-xs font-medium uppercase tracking-wide mb-1">Total Rooms</div>
+            <div class="font-medium text-[--primary]" id="total-rooms">{{building.totalrooms}}</div>
+          </div>
+          <div>
+            <div class="text-gray-500 text-xs font-medium uppercase tracking-wide mb-1">Capacity</div>
+            <div class="font-medium text-[--primary]" id="total-capacity">{{building.capacity}}</div>
+          </div>
+          <div>
+            <div class="text-gray-500 text-xs font-medium uppercase tracking-wide mb-1">Year Built</div>
+            <div class="font-medium text-[--primary]">{{building.built_year}}</div>
+          </div>
+          <div class="col-span-2">
+            <div class="text-gray-500 text-xs font-medium uppercase tracking-wide mb-1">Address</div>
+            <div class="font-medium text-[--primary]">{{building.location}}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="bg-white rounded-xl border border-[--border] hover:border-[--accent] transition-all duration-300 hover:shadow-md p-6">
+        <h2 class="text-lg font-semibold text-[--primary] mb-4">Quick Stats</h2>
+        <ul class="space-y-3 text-sm text-gray-700">
+          <li class="flex justify-between"><span class="text-gray-500 text-xs font-medium uppercase tracking-wide">Available Rooms</span><span class="font-medium text-[--primary]" id="available-rooms">{{building.available_rooms}}</span></li>
+          <li class="flex justify-between"><span class="text-gray-500 text-xs font-medium uppercase tracking-wide">Occupied Rooms</span><span class="font-medium text-[--primary]" id="occupied-rooms">{{building.occupied_rooms}}</span></li>
+          <li class="flex justify-between"><span class="text-gray-500 text-xs font-medium uppercase tracking-wide">Under Maintenance</span><span class="font-medium text-[--primary]" id="maintenance-rooms">{{building.maintenance_rooms}}</span></li>
+          <li class="flex justify-between"><span class="text-gray-500 text-xs font-medium uppercase tracking-wide">Utilization Rate</span><span class="font-medium text-[--primary]" id="util-rate">{{building.util_rate}}%</span></li>
+        </ul>
+        <div class="mt-4 text-sm text-gray-600" id="schedule-stats">
+          Rooms with Schedules: {{building.rooms_with_schedules}}
+          <br>
+          Remaining Rooms without Schedules: {{building.remaining_rooms_without_schedules}}
+        </div>
+      </div>
+
+      <!-- Rooms List -->
+      <div class="lg:col-span-3 bg-white rounded-xl border border-[--border] hover:border-[--accent] transition-all duration-300 hover:shadow-md p-6">
+        <h2 class="text-lg font-semibold text-[--primary] mb-4">Quick Actions</h2>
+        <div class="flex flex-col gap-4 mb-6">
+          <button id="openAddRoomModal" class="px-3 py-1 bg-[--accent] hover:bg-emerald-700 text-white rounded-lg font-medium text-sm text-center transition-colors w-32">
+            Add Room
+          </button>
+        </div>
+        <h2 class="text-lg font-semibold text-[--primary] mb-4">Rooms</h2>
+        <div class="grid grid-cols-1 gap-4" id="roomsList">
+          {{#each rooms}}
+          <div class="border border-[--border] rounded-lg p-4">
+            <h3 class="text-base font-medium text-[--primary]">{{this.name}} - {{this.type}}</h3>
+            <p class="text-sm text-gray-600">Floor Unknown • {{this.type}} • Capacity: {{this.capacity}}</p>
+          </div>
+          {{else}}
+          <p class="text-sm text-gray-600">No rooms found for this building.</p>
+          {{/each}}
+        </div>
+      </div>
+
+      <!-- Add Room Modal -->
+      <div id="addRoomModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md">
+          <h2 class="text-lg font-semibold text-[--primary] mb-4">Add New Room</h2>
+          <form id="addRoomForm">
+            <input type="hidden" name="building_id" value="{{building.id}}">
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700" for="name">Room Name</label>
+              <input type="text" name="name" id="name" class="mt-1 p-2 w-full border rounded-lg" required>
+              <p class="text-red-500 text-xs mt-1 hidden" id="name-error">Room name is required</p>
+            </div>
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700" for="capacity">Capacity</label>
+              <input type="number" name="capacity" id="capacity" class="mt-1 p-2 w-full border rounded-lg" required min="1">
+              <p class="text-red-500 text-xs mt-1 hidden" id="capacity-error">Capacity must be a positive number</p>
+            </div>
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700" for="type">Type</label>
+              <input type="text" name="type" id="type" class="mt-1 p-2 w-full border rounded-lg" required>
+              <p class="text-red-500 text-xs mt-1 hidden" id="type-error">Type is required</p>
+            </div>
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700" for="description">Description</label>
+              <textarea name="description" id="description" class="mt-1 p-2 w-full border rounded-lg"></textarea>
+            </div>
+            <div class="flex justify-end gap-4">
+              <button type="button" id="cancelRoomBtn" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg">Cancel</button>
+              <button type="submit" class="px-4 py-2 bg-[--accent] text-white rounded-lg">Add Room</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+{{> footer}}
+
+<!-- Include SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- Include SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+/* ===========================
+   BUILDING MODAL KEYBOARD SHORTCUTS
+   =========================== */
+document.addEventListener('keydown', (event) => {
+  const modal = document.getElementById('addRoomModal');
+  const form = document.getElementById('addRoomForm');
+  const isModalOpen = !modal.classList.contains('hidden');
+
+  // === Ctrl + Enter → Open modal & focus Room Name ===
+  if (event.ctrlKey && event.key === 'Enter') {
+    event.preventDefault();
+    openAddRoomModal();
+  }
+
+  // === Enter → Move to next input field or submit ===
+  if (event.key === 'Enter' && !event.ctrlKey && isModalOpen) {
+    const active = document.activeElement;
+    const inputs = Array.from(form.querySelectorAll('input, select, textarea, button'));
+    const index = inputs.indexOf(active);
+
+    if (active && active.tagName === 'SELECT') {
+      const hasValue = active.value && active.value.trim() !== '';
+      if (!hasValue) {
+        return; // Let Enter open the dropdown
+      } else {
+        event.preventDefault(); // Move to next input
+      }
+    } else {
+      event.preventDefault();
+    }
+
+    if (index > -1 && index < inputs.length - 1) {
+      inputs[index + 1].focus();
+    } else if (index === inputs.length - 1) {
+      form.requestSubmit();
+    }
+  }
+
+  // === Ctrl + D → Clear all fields ===
+  if (event.ctrlKey && event.key.toLowerCase() === 'd' && isModalOpen) {
+    event.preventDefault();
+    form.reset();
+    document.getElementById('name')?.focus();
+    Swal.fire({
+      toast: true,
+      position: 'bottom-end',
+      icon: 'info',
+      title: 'All fields cleared.',
+      showConfirmButton: false,
+      timer: 1000
+    });
+  }
+
+  // === Esc → Clear only current textbox ===
+  if (!event.ctrlKey && event.key === 'Escape' && isModalOpen) {
+    const active = document.activeElement;
+    if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA')) {
+      event.preventDefault();
+      active.value = '';
+      Swal.fire({
+        toast: true,
+        position: 'bottom-end',
+        icon: 'info',
+        title: 'Textbox cleared.',
+        showConfirmButton: false,
+        timer: 800
+      });
+    }
+  }
+
+  // === Ctrl + B → Close modal ===
+  if (event.ctrlKey && event.key.toLowerCase() === 'b' && isModalOpen) {
+    event.preventDefault();
+    closeAddRoomModal();
+    Swal.fire({
+      toast: true,
+      position: 'bottom-end',
+      icon: 'warning',
+      title: 'Modal closed.',
+      showConfirmButton: false,
+      timer: 1000
+    });
+  }
+});
+
+/* ===========================
+   MODAL OPEN/CLOSE FUNCTIONS
+   =========================== */
+function openAddRoomModal() {
+  const modal = document.getElementById('addRoomModal');
+  modal.classList.remove('hidden');
+  document.querySelectorAll('.text-red-500').forEach(el => el.classList.add('hidden'));
+  setTimeout(() => {
+    document.getElementById('name')?.focus();
+  }, 100);
+}
+
+function closeAddRoomModal() {
+  const modal = document.getElementById('addRoomModal');
+  const form = document.getElementById('addRoomForm');
+  modal.classList.add('hidden');
+  form.reset();
+  document.querySelectorAll('.text-red-500').forEach(el => el.classList.add('hidden'));
+}
+
+/* ===========================
+   BUTTON EVENT HANDLERS
+   =========================== */
+document.getElementById('openAddRoomModal').addEventListener('click', openAddRoomModal);
+document.getElementById('cancelRoomBtn').addEventListener('click', closeAddRoomModal);
+
+/* ===========================
+   FORM SUBMISSION HANDLER
+   =========================== */
+document.getElementById('addRoomForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const data = Object.fromEntries(formData);
+
+  let hasError = false;
+  if (!data.name) {
+    document.getElementById('name-error').classList.remove('hidden');
+    hasError = true;
+  } else {
+    document.getElementById('name-error').classList.add('hidden');
+  }
+  if (!data.capacity || data.capacity <= 0) {
+    document.getElementById('capacity-error').classList.remove('hidden');
+    hasError = true;
+  } else {
+    document.getElementById('capacity-error').classList.add('hidden');
+  }
+  if (!data.type) {
+    document.getElementById('type-error').classList.remove('hidden');
+    hasError = true;
+  } else {
+    document.getElementById('type-error').classList.add('hidden');
+  }
+
+  if (hasError) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Validation Error',
+      text: 'Please fill in all required fields correctly.'
+    });
+    return;
+  }
+
+  try {
+    const response = await fetch('/rooms/add', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+
+    const result = await response.json();
+    if (response.ok) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Room Added',
+        text: result.message || 'Room added successfully!'
+      });
+      closeAddRoomModal();
+      await refreshRoomsList(data.building_id);
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: result.error || 'Failed to add room.'
+      });
+    }
+  } catch (error) {
+    console.error('Error adding room:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'An error occurred while adding the room.'
+    });
+  }
+});
+
+/* ===========================
+   REFRESH ROOM LIST FUNCTION
+   =========================== */
+async function refreshRoomsList(buildingId) {
+  try {
+    const roomsResponse = await fetch(`/rooms/building/${buildingId}`);
+    const rooms = await roomsResponse.json();
+    const roomsContainer = document.getElementById('roomsList');
+
+    roomsContainer.innerHTML = rooms.length
+      ? rooms.map(room => `
+          <div class="border border-[--border] rounded-lg p-4">
+            <h3 class="text-base font-medium text-[--primary]">${room.name} - ${room.type}</h3>
+            <p class="text-sm text-gray-600">Floor Unknown • ${room.type} • Capacity: ${room.capacity}</p>
+          </div>
+        `).join('')
+      : '<p class="text-sm text-gray-600">No rooms found for this building.</p>';
+  } catch (error) {
+    console.error('Error refreshing rooms list:', error);
+  }
+}
+
+/* ===========================
+   GLOBAL NAVIGATION SHORTCUTS
+   =========================== */
+document.addEventListener('keydown', (event) => {
+  if (event.ctrlKey && event.altKey) {
+    switch (event.key.toLowerCase()) {
+      case 'c': window.location.href = '/colleges'; break;
+      case 'b': window.location.href = '/buildings'; break;
+      case 'r': window.location.href = '/rooms'; break;
+      case 's': window.location.href = '/schedules'; break;
+      case 'd': window.location.href = '/dashboard'; break;
+      case 'l': window.location.href = '/logout'; break;
+      case 'a': window.location.href = '/settings'; break;
+      default: return;
+    }
+    event.preventDefault();
+  }
+});
+</script>

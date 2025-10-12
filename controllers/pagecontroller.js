@@ -47,7 +47,6 @@ export const collegePage = (req, res) => {
   res.render("colleges", { active: 'colleges', title: 'Colleges' });
 }
 export const collegeDetailPage = (req, res) => {
-  // In a real app you'd fetch the college by id. For now render static view.
   res.render("college", { active: 'colleges', title: 'College Details' });
 }
 export const settingsPage = (req, res) => {

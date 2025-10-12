@@ -32,7 +32,10 @@ import fs from 'fs';
 import hbs from "hbs";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
-
+// import Handlebars from "handlebars";
+// Handlebars.registerHelper("eq", function (a, b) {
+//   return a === b;
+// });
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -60,7 +63,12 @@ app.engine("xian", async (filePath, options, callback) => {
         if (err) return reject(err);
         resolve(html);
       });
+      
+      
     });
+    helpers: {
+    eq: (v1, v2) => v1 === v2 // Register the eq helper
+  }
 
     hbs.partialsDir = originalPartialsDir;
     callback(null, result);

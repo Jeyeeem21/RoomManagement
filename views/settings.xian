@@ -1,37 +1,442 @@
-{{> head title="Settings" }}
-{{> sidebar }}
+{{> head title=title}}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+{{> sidebar active=active user=user}}
 
-<div class="flex items-center justify-between mb-6">
-  <div>
-    <nav class="text-sm text-gray-600">Home / Settings</nav>
-    <h2 class="text-2xl font-semibold text-[#344158]">Settings</h2>
+<main class="main-content min-h-screen p-8">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <nav class="text-sm text-slate-600">Home / Admin</nav>
+      <h2 class="text-2xl font-semibold text-slate-900">Admin Settings</h2>
+    </div>
+    <button onclick="showGeneralSettingsModal()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors">
+      Edit Contents
+    </button>
   </div>
-</div>
 
-{{> footer }}
+  {{#if error}}
+    <div class="mb-6 p-4 bg-red-100 text-red-800 rounded-lg">
+      {{error}}
+    </div>
+  {{/if}}
 
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-  <div class="bg-white rounded shadow p-4">
-    <h3 class="font-semibold mb-3">General Settings</h3>
-    <div class="space-y-3">
-      <div>
-        <label class="block text-sm text-gray-700">University Name</label>
-        <input class="w-full border p-2 rounded" value="MBC University" />
+  <div class="grid grid-cols-1 lg:grid-cols-1 gap-6">
+    <!-- General Settings Modal -->
+    <div id="generalSettingsModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+      <div class="bg-white rounded-lg p-6 w-full max-w-md">
+        <h3 class="font-semibold text-slate-900 mb-4">General Settings</h3>
+        <form id="general-settings-form" action="/settings/content/save" method="post" enctype="multipart/form-data">
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1">University Name</label>
+              <input
+                name="name"
+                value="{{mainContent.name}}"
+                class="w-full border border-slate-300 rounded-lg px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1">Main Content</label>
+              <textarea
+                name="content"
+                class="w-full border border-slate-300 rounded-lg px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+              >{{mainContent.content}}</textarea>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1">Logo</label>
+              {{#if mainContent.logo}}
+                <img src="/Uploads/{{mainContent.logo}}" alt="Current Logo" class="w-32 h-32 mb-2" />
+                <p class="text-xs text-slate-500">Upload a new file to replace the current logo.</p>
+              {{else}}
+                <p class="text-xs text-slate-500">No logo uploaded yet.</p>
+              {{/if}}
+              <input
+                type="file"
+                name="logo"
+                class="w-full text-sm text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 file:cursor-pointer"
+                accept="image/*"
+              />
+            </div>
+            <div class="flex justify-end space-x-2">
+              <button type="button" onclick="closeGeneralSettingsModal()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg">Cancel</button>
+              <button
+                type="submit"
+                class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors"
+              >
+                {{#if mainContent}}Update Settings{{else}}Save Settings{{/if}}
+              </button>
+            </div>
+          </div>
+        </form>
       </div>
-      <div>
-        <label class="block text-sm text-gray-700">Logo</label>
-        <input type="file" class="w-full" />
+    </div>
+
+    <!-- User Management Table -->
+    <div class="bg-white rounded-lg border border-slate-200 overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+        <h3 class="font-semibold text-slate-900">User Management</h3>
+        <button onclick="showAddModal()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors">Add User</button>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm">
+          <thead class="bg-slate-50 border-b border-slate-200">
+            <tr>
+              <th class="px-6 py-3 text-xs font-medium text-slate-700 uppercase tracking-wider">Username</th>
+              <th class="px-6 py-3 text-xs font-medium text-slate-700 uppercase tracking-wider">Role</th>
+              <th class="px-6 py-3 text-xs font-medium text-slate-700 uppercase tracking-wider">Status</th>
+              <th class="px-6 py-3 text-xs font-medium text-slate-700 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200">
+            {{#each users}}
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td class="px-6 py-4 text-slate-900 font-medium">{{name}}</td>
+              <td class="px-6 py-4 text-slate-600">{{role}}</td>
+              <td class="px-6 py-4">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                  {{#ifEquals status 'active'}}bg-green-100 text-green-800{{else}}bg-red-100 text-red-800{{/ifEquals}}">
+                  {{status}}
+                </span>
+              </td>
+              <td class="px-6 py-4 flex space-x-2">
+                <button onclick="showEditModal('{{id}}')" class="text-emerald-600 hover:text-emerald-800 p-1" title="Edit">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button onclick="deleteUser('{{id}}')" class="text-red-600 hover:text-red-800 p-1" title="Delete">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+            {{else}}
+            <tr>
+              <td colspan="4" class="px-6 py-4 text-center text-slate-500">No users found</td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
 
-  <div class="bg-white rounded shadow p-4">
-    <h3 class="font-semibold mb-3">User Management</h3>
-    <table class="w-full text-left text-sm">
-      <thead class="bg-[#344158] text-white"><tr><th class="p-2">Username</th><th class="p-2">Role</th><th class="p-2">Status</th><th class="p-2">Actions</th></tr></thead>
-      <tbody>
-        <tr class="border-b"><td class="p-2">admin</td><td class="p-2">Administrator</td><td class="p-2">Active</td><td class="p-2"><button class="text-[#28A745] mr-2">Edit</button><button class="text-[#FFD700]">Disable</button></td></tr>
-      </tbody>
-    </table>
+  <!-- User Modal -->
+  <div id="userModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-lg p-6 w-full max-w-md">
+      <h3 id="userModalTitle" class="font-semibold text-slate-900 mb-4">Add User</h3>
+      <form id="userForm" action="" method="post">
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Username</label>
+            <input id="name" name="name" class="w-full border border-slate-300 rounded-lg px-3 py-2" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Email</label>
+            <input id="email" name="email" type="email" class="w-full border border-slate-300 rounded-lg px-3 py-2" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Role</label>
+            <select id="role" name="role" class="w-full border border-slate-300 rounded-lg px-3 py-2">
+              <option>Administrator</option>
+              <option>User</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Status</label>
+            <select id="status" name="status" class="w-full border border-slate-300 rounded-lg px-3 py-2">
+              <option>active</option>
+              <option>inactive</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Password</label>
+            <input id="password" name="password" type="password" class="w-full border border-slate-300 rounded-lg px-3 py-2" placeholder="Enter new password (optional for edit)" />
+            <p class="text-xs text-slate-500 mt-1">Leave blank to keep existing password when editing.</p>
+          </div>
+          <div class="flex justify-end space-x-2">
+            <button type="button" onclick="closeModal()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg">Cancel</button>
+            <button type="submit" class="px-4 py-2 bg-emerald-600 text-white rounded-lg">Save</button>
+          </div>
+        </div>
+      </form>
+    </div>
   </div>
-</div>
+</main>
+{{> footer }}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  // General Settings Modal Controls
+  const generalSettingsModal = document.getElementById('generalSettingsModal');
+
+  function showGeneralSettingsModal() {
+    generalSettingsModal.classList.remove('hidden');
+  }
+
+  function closeGeneralSettingsModal() {
+    generalSettingsModal.classList.add('hidden');
+  }
+
+  // General Settings Form Submission
+ document.getElementById('general-settings-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  for (let [key, value] of formData.entries()) {
+    console.log(`${key}: ${value}`);
+  }
+  try {
+    const response = await fetch('/settings/content/save', {
+      method: 'POST',
+      body: formData,
+      credentials: 'include',
+    });
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Unknown server error');
+    }
+    const result = await response.json();
+    Swal.fire('Saved!', result.message, 'success').then(() => {
+      closeGeneralSettingsModal();
+      location.reload();
+    });
+  } catch (error) {
+    console.error('Form submission error:', error);
+    Swal.fire('Error', `Failed to save settings: ${error.message}`, 'error');
+  }
+});
+
+/* ===========================
+   UNIVERSAL MODAL SHORTCUT HANDLER
+   =========================== */
+document.addEventListener('keydown', (event) => {
+  const userModal = document.getElementById('userModal');
+  const generalModal = document.getElementById('generalSettingsModal');
+
+  const isUserOpen = !userModal.classList.contains('hidden');
+  const isGeneralOpen = !generalModal.classList.contains('hidden');
+
+  /* === Ctrl + Enter → Open Add User Modal === */
+  if (event.ctrlKey && !event.altKey && event.key === 'Enter') {
+    event.preventDefault();
+    showAddModal();
+    setTimeout(() => document.getElementById('name')?.focus(), 100);
+  }
+
+  /* === Ctrl + Alt + Enter → Open Edit Contents Modal === */
+  if (event.ctrlKey && event.altKey && event.key === 'Enter') {
+    event.preventDefault();
+    showGeneralSettingsModal();
+    setTimeout(() => document.querySelector('input[name="name"]')?.focus(), 100);
+  }
+
+  /* === Enter Key Navigation (Inside Modals) === */
+  if (event.key === 'Enter' && (isUserOpen || isGeneralOpen)) {
+    const form = isUserOpen
+      ? document.getElementById('userForm')
+      : document.getElementById('general-settings-form');
+    const inputs = Array.from(
+      form.querySelectorAll('input, select, textarea, button')
+    );
+    const active = document.activeElement;
+    const index = inputs.indexOf(active);
+
+    if (active && active.tagName === 'SELECT') {
+      // Check if value selected
+      const hasValue = active.value && active.value.trim() !== '';
+      if (!hasValue) return; // let default dropdown open
+      else event.preventDefault();
+    } else {
+      event.preventDefault();
+    }
+
+    // Move to next input or submit form
+    if (index > -1 && index < inputs.length - 1) {
+      inputs[index + 1].focus();
+    } else if (index === inputs.length - 1) {
+      form.requestSubmit();
+    }
+  }
+
+  /* === Ctrl + D → Clear all fields (Inside Modals) === */
+  if (event.ctrlKey && event.key.toLowerCase() === 'd' && (isUserOpen || isGeneralOpen)) {
+    event.preventDefault();
+    const form = isUserOpen
+      ? document.getElementById('userForm')
+      : document.getElementById('general-settings-form');
+    form.reset();
+
+    // Focus first input
+    if (isUserOpen) document.getElementById('name')?.focus();
+    else document.querySelector('input[name="name"]')?.focus();
+
+    Swal.fire({
+      toast: true,
+      position: 'bottom-end',
+      icon: 'info',
+      title: 'All fields cleared.',
+      showConfirmButton: false,
+      timer: 1000
+    });
+  }
+
+  /* === Esc → Clear current textbox only === */
+  if (event.key === 'Escape' && (isUserOpen || isGeneralOpen)) {
+    const active = document.activeElement;
+    if (active && active.tagName === 'INPUT') {
+      event.preventDefault();
+      active.value = '';
+      Swal.fire({
+        toast: true,
+        position: 'bottom-end',
+        icon: 'info',
+        title: 'Textbox cleared.',
+        showConfirmButton: false,
+        timer: 800
+      });
+    }
+  }
+
+  /* === Ctrl + B → Close modal === */
+  if (event.ctrlKey && event.key.toLowerCase() === 'b' && (isUserOpen || isGeneralOpen)) {
+    event.preventDefault();
+    if (isUserOpen) closeModal();
+    else closeGeneralSettingsModal();
+
+    Swal.fire({
+      toast: true,
+      position: 'bottom-end',
+      icon: 'warning',
+      title: 'Modal closed.',
+      showConfirmButton: false,
+      timer: 1000
+    });
+  }
+});
+
+  // User Modal Controls
+  const userModal = document.getElementById('userModal');
+
+  function showModal() {
+    userModal.classList.remove('hidden');
+  }
+
+  function closeModal() {
+    userModal.classList.add('hidden');
+  }
+
+  function showAddModal() {
+    document.getElementById('userModalTitle').textContent = 'Add New User';
+    document.getElementById('userForm').action = '/settings/users/add';
+    document.getElementById('name').value = '';
+    document.getElementById('email').value = '';
+    document.getElementById('role').value = 'Administrator';
+    document.getElementById('status').value = 'active';
+    document.getElementById('password').value = '';
+    showModal();
+  }
+
+  async function showEditModal(id) {
+    try {
+      const response = await fetch(`/settings/users/get/${id}`);
+      if (!response.ok) throw new Error('Failed to fetch user data');
+      const user = await response.json();
+
+      document.getElementById('userModalTitle').textContent = 'Edit User';
+      document.getElementById('userForm').action = `/settings/users/update/${id}`;
+      document.getElementById('name').value = user.name || '';
+      document.getElementById('email').value = user.email || '';
+      document.getElementById('role').value = user.role || 'Administrator';
+      document.getElementById('status').value = user.status || 'active';
+      document.getElementById('password').value = '';
+      showModal();
+    } catch (error) {
+      Swal.fire('Error', `Failed to load user data: ${error.message}`, 'error');
+    }
+  }
+
+  async function deleteUser(id) {
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this action!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#10B981',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const response = await fetch(`/settings/users/delete/${id}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include'
+        });
+        if (!response.ok) throw new Error('Failed to delete user');
+
+        Swal.fire('Deleted!', 'User has been deleted.', 'success').then(() => {
+          location.reload();
+        });
+      } catch (error) {
+        Swal.fire('Error', `Failed to delete user: ${error.message}`, 'error');
+      }
+    }
+  }
+
+  document.getElementById('userForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = {
+      name: document.getElementById('name').value.trim(),
+      email: document.getElementById('email').value.trim(),
+      role: document.getElementById('role').value,
+      status: document.getElementById('status').value,
+      password: document.getElementById('password').value.trim()
+    };
+
+    try {
+      const response = await fetch(e.target.action, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+        credentials: 'include'
+      });
+      if (!response.ok) throw new Error('Failed to save user');
+
+      Swal.fire('Success', 'User saved successfully!', 'success').then(() => {
+        closeModal();
+        location.reload();
+      });
+    } catch (error) {
+      Swal.fire('Error', `Failed to save user: ${error.message}`, 'error');
+    }
+  });
+   document.addEventListener('keydown', (event) => {
+  if (event.ctrlKey && event.altKey) {
+    switch (event.key.toLowerCase()) {
+      case 'c': // Ctrl + Alt + C → Add College
+        window.location.href = '/colleges';
+        break;
+      case 'b': // Ctrl + Alt + B → Add Building
+        window.location.href = '/buildings';
+        break;
+      case 'r': // Ctrl + Alt + R → Add Room
+        window.location.href = '/rooms';
+        break;
+      case 's': // Ctrl + Alt + S → Add Schedule
+        window.location.href = '/schedules';
+        break;
+      case 'd': // Ctrl + Alt + D → Go to Dashboard
+        window.location.href = '/dashboard';
+        break;
+       case 'l': // Ctrl + Alt + L → Go to Logout
+        window.location.href = '/logout';
+        break;
+      case 'a': // Ctrl + Alt + A → Go to Home
+        window.location.href = '/settings';
+        break;
+      default:
+        return;
+    }
+
+    // Prevent default browser actions (optional)
+    event.preventDefault();
+  }
+});
+</script>

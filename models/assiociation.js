@@ -1,3 +1,4 @@
+//models/assiociation.js
 import { College } from "./College.js";
 import { Building } from "./Building.js";
 import { Room } from "./Room.js";
