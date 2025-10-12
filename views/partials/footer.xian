@@ -4,15 +4,20 @@
     <!-- Updated footer with refined styling -->
 <!-- partials/footer -->
 <footer class="border-t border-slate-200 bg-white text-slate-600 text-sm transition-all duration-300">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
+  <div class="max-w-7xl mx-auto px-3 sm:px-6 py-6 sm:py-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8">
       <div>
         <div class="text-base font-semibold text-slate-900">MBC University</div>
-        <p class="mt-2 text-slate-500">Room Management System powered by XianFire.</p>
+        <p class="mt-2 text-slate-500 text-sm sm:text-base">Room Management System powered by XianFire.</p>
       </div>
+
+      <!-- Collapsible sections on mobile -->
       <div>
-        <div class="text-base font-semibold text-slate-900 mb-3">Product</div>
-        <ul class="space-y-2">
+        <button class="w-full flex items-center justify-between md:justify-start md:cursor-auto footer-toggle py-1 md:py-0 text-left">
+          <span class="text-base font-semibold text-slate-900 mb-0 md:mb-3">Product</span>
+          <svg class="w-4 h-4 md:hidden text-slate-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <ul class="mt-2 space-y-2 footer-content hidden md:block">
           <li><a href="/dashboard" class="hover:text-emerald-600 transition-colors">Dashboard</a></li>
           <li><a href="/colleges" class="hover:text-emerald-600 transition-colors">Colleges</a></li>
           <li><a href="/buildings" class="hover:text-emerald-600 transition-colors">Buildings</a></li>
@@ -21,17 +26,25 @@
           <li><a href="/settings" class="hover:text-emerald-600 transition-colors">Settings</a></li>
         </ul>
       </div>
+
       <div>
-        <div class="text-base font-semibold text-slate-900 mb-3">Resources</div>
-        <ul class="space-y-2">
+        <button class="w-full flex items-center justify-between md:justify-start md:cursor-auto footer-toggle py-1 md:py-0 text-left">
+          <span class="text-base font-semibold text-slate-900 mb-0 md:mb-3">Resources</span>
+          <svg class="w-4 h-4 md:hidden text-slate-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <ul class="mt-2 space-y-2 footer-content hidden md:block">
           <li><a href="#" class="hover:text-emerald-600 transition-colors">Documentation</a></li>
           <li><a href="#" class="hover:text-emerald-600 transition-colors">Support</a></li>
           <li><a href="#" class="hover:text-emerald-600 transition-colors">API Status</a></li>
         </ul>
       </div>
+
       <div>
-        <div class="text-base font-semibold text-slate-900 mb-3">Company</div>
-        <ul class="space-y-2">
+        <button class="w-full flex items-center justify-between md:justify-start md:cursor-auto footer-toggle py-1 md:py-0 text-left">
+          <span class="text-base font-semibold text-slate-900 mb-0 md:mb-3">Company</span>
+          <svg class="w-4 h-4 md:hidden text-slate-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <ul class="mt-2 space-y-2 footer-content hidden md:block">
           <li><a href="#" class="hover:text-emerald-600 transition-colors">About</a></li>
           <li><a href="/privacy" class="hover:text-emerald-600 transition-colors">Privacy</a></li>
           <li><a href="/terms" class="hover:text-emerald-600 transition-colors">Terms</a></li>
@@ -50,16 +63,14 @@
 
   /* Desktop: default margin to align with main content */
   @media (min-width: 768px) {
-    /* Default desktop offset matches the main-content offset */
     footer {
       margin-left: 16rem; /* Matches main-content's margin-left */
     }
 
-    /*
-      Handle three cases so the footer moves when the sidebar is collapsed:
-      1) footer is a descendant of an element with .sidebar-collapsed
-      2) footer immediately follows #app-shell when #app-shell has the class
-      3) legacy .sidebar-collapsed footer selector
+    /* Handle three cases so the footer moves when the sidebar is collapsed:
+       1) footer is a descendant of an element with .sidebar-collapsed
+       2) footer immediately follows #app-shell when #app-shell has the class
+       3) legacy .sidebar-collapsed footer selector
     */
     #app-shell.sidebar-collapsed + footer,
     #app-shell.sidebar-collapsed footer,
@@ -68,11 +79,18 @@
     }
   }
 
-  /* Mobile: no margin to align with main content */
+  /* Mobile: no margin to align with main content and compact layout */
   @media (max-width: 767px) {
     footer {
       margin-left: 0;
     }
+    footer .max-w-7xl { padding-left: 12px; padding-right: 12px; }
+    footer .footer-content { transition: max-height 0.22s ease; overflow: hidden; max-height: 0; }
+    footer .footer-content.show { max-height: 420px; }
+    footer .footer-toggle { width: 100%; }
+    footer ul.space-y-2 li { font-size: 14px; }
+    footer p { font-size: 13px; }
+    footer .text-base { font-size: 16px; }
   }
 </style>
     <script>
@@ -83,6 +101,23 @@
           document.getElementById('app-shell').classList.toggle('sidebar-collapsed');
         });
       }
+
+      // Footer collapsible sections (mobile)
+      document.querySelectorAll('.footer-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          // Only allow toggling on small screens
+          if (window.innerWidth >= 768) return;
+          const content = btn.nextElementSibling;
+          if (!content) return;
+          if (content.classList.contains('show')) {
+            content.classList.remove('show');
+            content.classList.add('hidden');
+          } else {
+            content.classList.remove('hidden');
+            content.classList.add('show');
+          }
+        });
+      });
     </script>
 </body>
 </html>
