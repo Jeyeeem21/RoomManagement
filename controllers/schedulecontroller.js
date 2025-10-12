@@ -489,10 +489,15 @@ const schedulecontroller = {
       }
     });
 
+    // Set a fixed row height (30px) so rowspan calculations match the number
+    // of 30-minute slots. This ensures td rowspans produce cells tall enough
+    // for their inner div backgrounds to fill the full area when exported
+    // to Excel/HTML. Adjust the 30px value if you use a different visual row height.
     let htmlContent = `<html><head><meta charset="UTF-8"><style>
       table { border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; }
+      tr { height: 30px; }
       th, td { vertical-align: top; }
-      .time-cell { background-color: #f0f0f0; font-weight: bold; }
+      .time-cell { background-color: #f0f0f0; font-weight: bold; padding:8px; }
     </style></head><body>`;
     htmlContent += `<h3>${title || "Weekly Calendar"}</h3>`;
     htmlContent += `<table>`;
@@ -513,7 +518,16 @@ const schedulecontroller = {
             console.log(`[v0] HTML: Adding cell at ${day} ${time} with rowspan=${cell.rowspan}, color=${bg}`);
           }
 
-          htmlContent += `<td${rowspanAttr} style="border: 1px solid #000; padding: 8px; background-color: ${bg} !important; vertical-align: top;">${cell.text}</td>`;
+          // Use an inner full-height div for the cell content so the background
+          // fills the entire rowspan area even when the content contains <br>
+          // Add td-level bgcolor and background-color style as a fallback
+          // for spreadsheet viewers that may ignore inner div styles.
+          // Compute explicit inner div height (rowspan * 30px) so the colored
+          // box exactly matches the visual span when opened in Excel/HTML viewers.
+          const divHeight = (cell.rowspan || 1) * 30;
+          // Use valign="middle" for Excel compatibility and center text both
+          // vertically and horizontally. Increase font-size and allow wrapping.
+          htmlContent += `<td${rowspanAttr} bgcolor="${bg}" valign="middle" style="border: 1px solid #000; padding: 0; vertical-align: middle; background-color: ${bg} !important;"><div style="padding:8px; height:${divHeight}px; display:block; width:100%; box-sizing:border-box; background-color: ${bg} !important; font-family: Arial, sans-serif; font-size:15px; font-weight:600; text-align:center; line-height:1.15; word-break:break-word; white-space:normal;">${cell.text}</div></td>`;
         } else {
           console.log(`[v0] HTML: Skipping ${day} ${time} (part of rowspan)`);
         }
@@ -535,17 +549,20 @@ const schedulecontroller = {
       }
     }
 
+    // Use a fixed row height matching the 30-minute slot granularity so
+    // rowspan cells expand correctly in Excel/HTML viewers.
     let htmlContent = `<html><head><meta charset="UTF-8"><style>
       body { font-family: Arial, sans-serif; }
+      tr { height: 30px; }
       .section-container { display: inline-block; vertical-align: top; margin: 20px; }
       table { border-collapse: collapse; font-family: Arial, sans-serif; margin-bottom: 20px; }
       th, td { vertical-align: top; }
-      .time-cell { background-color: #333; color: white; font-weight: bold; }
+      .time-cell { background-color: #333; color: white; font-weight: bold; padding:8px; }
       .day-header { background-color: #333; color: white; font-weight: bold; }
       .section-title { background-color: #FF1493; color: white; font-weight: bold; font-size: 14px; padding: 10px; text-align: center; }
-      .legend-table { width: 100%; margin-top: 10px; }
-      .legend-header { background-color: #800080; color: white; font-weight: bold; }
-      .legend-cell { text-align: left; padding: 5px; font-size: 10px; }
+  .legend-table { width: 100%; margin-top: 10px; }
+  .legend-header { background-color: #800080; color: white; font-weight: bold; font-size:15px; }
+  .legend-cell { text-align: left; padding: 5px; font-size: 15px; }
     </style></head><body>`;
 
     const sortedSections = Object.keys(groupedSchedules).sort((a, b) => {
@@ -613,8 +630,8 @@ const schedulecontroller = {
           console.log(`[v0] Duration: ${durationMinutes} min = ${slotsToSpan} slots`);
 
           let displayText = "";
-          if (course) displayText += course + "<br>";
-          if (roomName) displayText += roomName + "<br>";
+          if (course) displayText += course ;
+          if (roomName) displayText += roomName;
           if (schedule.faculty_name) displayText += schedule.faculty_name;
 
           calendar[day][startTime] = {
@@ -651,7 +668,12 @@ const schedulecontroller = {
           if (!cell.skip) {
             const bg = cell.color || "#fff";
             const rowspanAttr = cell.rowspan > 1 ? ` rowspan="${cell.rowspan}"` : "";
-            htmlContent += `<td${rowspanAttr} style="border: 1px solid #000; padding: 8px; background-color: ${bg} !important; vertical-align: top;">${cell.text}</td>`;
+            // Wrap content in a full-height div and remove td padding so the
+            // background color fills the entire rowspan area without gaps.
+            // Add td-level bgcolor and background-color style as a fallback
+            // for spreadsheet viewers that may ignore inner div styles.
+            const divHeight = (cell.rowspan || 1) * 30;
+            htmlContent += `<td${rowspanAttr} bgcolor="${bg}" valign="middle" style="border: 1px solid #000; padding: 0; vertical-align: middle; background-color: ${bg} !important;"><div style="padding:8px; height:${divHeight}px; display:block; width:100%; box-sizing:border-box; background-color: ${bg} !important; font-family: Arial, sans-serif; font-size:15px; font-weight:600; text-align:center; line-height:1.15; word-break:break-word; white-space:normal;">${cell.text}</div></td>`;
           } else {
             console.log(`[v0] HTML: Skipping ${day} ${time} (part of rowspan)`);
           }

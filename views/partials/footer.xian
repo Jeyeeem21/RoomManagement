@@ -50,9 +50,19 @@
 
   /* Desktop: default margin to align with main content */
   @media (min-width: 768px) {
+    /* Default desktop offset matches the main-content offset */
     footer {
       margin-left: 16rem; /* Matches main-content's margin-left */
     }
+
+    /*
+      Handle three cases so the footer moves when the sidebar is collapsed:
+      1) footer is a descendant of an element with .sidebar-collapsed
+      2) footer immediately follows #app-shell when #app-shell has the class
+      3) legacy .sidebar-collapsed footer selector
+    */
+    #app-shell.sidebar-collapsed + footer,
+    #app-shell.sidebar-collapsed footer,
     .sidebar-collapsed footer {
       margin-left: 4.5rem; /* Matches sidebar-collapsed main-content */
     }
