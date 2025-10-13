@@ -20,55 +20,7 @@
   {{/if}}
 
   <div class="grid grid-cols-1 lg:grid-cols-1 gap-6">
-    <!-- General Settings Modal -->
-    <div id="generalSettingsModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
-      <div class="bg-white rounded-lg p-6 w-full max-w-md">
-        <h3 class="font-semibold text-slate-900 mb-4">General Settings</h3>
-        <form id="general-settings-form" action="/settings/content/save" method="post" enctype="multipart/form-data">
-          <div class="space-y-4">
-            <div>
-              <label class="block text-sm font-medium text-slate-700 mb-1">University Name</label>
-              <input
-                name="name"
-                value="{{mainContent.name}}"
-                class="w-full border border-slate-300 rounded-lg px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-slate-700 mb-1">Main Content</label>
-              <textarea
-                name="content"
-                class="w-full border border-slate-300 rounded-lg px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-              >{{mainContent.content}}</textarea>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-slate-700 mb-1">Logo</label>
-              {{#if mainContent.logo}}
-                <img src="/Uploads/{{mainContent.logo}}" alt="Current Logo" class="w-32 h-32 mb-2" />
-                <p class="text-xs text-slate-500">Upload a new file to replace the current logo.</p>
-              {{else}}
-                <p class="text-xs text-slate-500">No logo uploaded yet.</p>
-              {{/if}}
-              <input
-                type="file"
-                name="logo"
-                class="w-full text-sm text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 file:cursor-pointer"
-                accept="image/*"
-              />
-            </div>
-            <div class="flex justify-end space-x-2">
-              <button type="button" onclick="closeGeneralSettingsModal()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg">Cancel</button>
-              <button
-                type="submit"
-                class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors"
-              >
-                {{#if mainContent}}Update Settings{{else}}Save Settings{{/if}}
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
+    <!-- General Settings Modal removed from here and will be placed after </main> -->
 
     <!-- User Management Table -->
     <div class="bg-white rounded-lg border border-slate-200 overflow-hidden">
@@ -117,8 +69,60 @@
     </div>
   </div>
 
+  <!-- User Modal removed from here and will be placed after </main> -->
+</main>
+  <!-- General Settings Modal -->
+  <div id="generalSettingsModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden backdrop-blur-sm">
+    <div class="bg-white rounded-lg p-6 w-full max-w-md">
+      <h3 class="font-semibold text-slate-900 mb-4">General Settings</h3>
+      <form id="general-settings-form" action="/settings/content/save" method="post" enctype="multipart/form-data">
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">University Name</label>
+            <input
+              name="name"
+              value="{{mainContent.name}}"
+              class="w-full border border-slate-300 rounded-lg px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Main Content</label>
+            <textarea
+              name="content"
+              class="w-full border border-slate-300 rounded-lg px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+            >{{mainContent.content}}</textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Logo</label>
+            {{#if mainContent.logo}}
+              <img src="/Uploads/{{mainContent.logo}}" alt="Current Logo" class="w-32 h-32 mb-2" />
+              <p class="text-xs text-slate-500">Upload a new file to replace the current logo.</p>
+            {{else}}
+              <p class="text-xs text-slate-500">No logo uploaded yet.</p>
+            {{/if}}
+            <input
+              type="file"
+              name="logo"
+              class="w-full text-sm text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 file:cursor-pointer"
+              accept="image/*"
+            />
+          </div>
+          <div class="flex justify-end space-x-2">
+            <button type="button" onclick="closeGeneralSettingsModal()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg">Cancel</button>
+            <button
+              type="submit"
+              class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors"
+            >
+              {{#if mainContent}}Update Settings{{else}}Save Settings{{/if}}
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- User Modal -->
-  <div id="userModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+  <div id="userModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden backdrop-blur-sm">
     <div class="bg-white rounded-lg p-6 w-full max-w-md">
       <h3 id="userModalTitle" class="font-semibold text-slate-900 mb-4">Add User</h3>
       <form id="userForm" action="" method="post">
@@ -163,7 +167,7 @@
       </form>
     </div>
   </div>
-</main>
+
 {{> footer }}
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -173,10 +177,12 @@
 
   function showGeneralSettingsModal() {
     generalSettingsModal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
   }
 
   function closeGeneralSettingsModal() {
     generalSettingsModal.classList.add('hidden');
+    document.body.style.overflow = 'auto';
   }
 
   // General Settings Form Submission
@@ -320,10 +326,12 @@ document.addEventListener('keydown', (event) => {
 
   function showModal() {
     userModal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
   }
 
   function closeModal() {
     userModal.classList.add('hidden');
+    document.body.style.overflow = 'auto';
   }
 
   function showAddModal() {
@@ -384,6 +392,15 @@ document.addEventListener('keydown', (event) => {
       }
     }
   }
+
+  // Close modals when clicking on backdrop
+  generalSettingsModal?.addEventListener('click', (e) => {
+    if (e.target === generalSettingsModal) closeGeneralSettingsModal();
+  });
+
+  userModal?.addEventListener('click', (e) => {
+    if (e.target === userModal) closeModal();
+  });
 
   // Helper: SHA-1 hex digest using Web Crypto
   async function sha1Hex(message) {

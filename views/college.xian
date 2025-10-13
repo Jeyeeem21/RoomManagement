@@ -87,69 +87,7 @@
         </button>
       </div>
 
-      <!-- Add Building Modal -->
-      <div id="addBuildingModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden z-50">
-        <div class="bg-white rounded-lg p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-          <h2 class="text-xl font-semibold text-[--primary] mb-6">Add New Building</h2>
-          <form id="addBuildingForm">
-            <input type="hidden" name="college_id" value="{{college.id}}">
-            
-            <!-- Reorganized form into a 2-column grid for better space usage -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1" for="name">Building Name *</label>
-                <input type="text" name="name" id="name" class="p-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-[--accent] focus:border-transparent" required>
-                <p class="text-red-500 text-xs mt-1 hidden" id="name-error">Building name is required</p>
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1" for="status">Status *</label>
-                <select name="status" id="status" class="p-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-[--accent] focus:border-transparent" required>
-                  <option value="">Select status</option>
-                  <option value="Operational">Operational</option>
-                  <option value="Under Renovation">Under Renovation</option>
-                  <option value="Closed">Closed</option>
-                </select>
-                <p class="text-red-500 text-xs mt-1 hidden" id="status-error">Status is required</p>
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1" for="floors">Floors *</label>
-                <input type="number" name="floors" id="floors" class="p-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-[--accent] focus:border-transparent" required min="1">
-                <p class="text-red-500 text-xs mt-1 hidden" id="floors-error">Floors must be a positive number</p>
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1" for="totalrooms">Total Rooms *</label>
-                <input type="number" name="totalrooms" id="totalrooms" class="p-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-[--accent] focus:border-transparent" required min="0">
-                <p class="text-red-500 text-xs mt-1 hidden" id="totalrooms-error">Total rooms must be non-negative</p>
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1" for="built_year">Built Year *</label>
-                <input type="number" name="built_year" id="built_year" class="p-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-[--accent] focus:border-transparent" required min="1800" max="2100">
-                <p class="text-red-500 text-xs mt-1 hidden" id="built_year-error">Built year must be between 1800 and 2100</p>
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1" for="location">Address *</label>
-                <input type="text" name="location" id="location" class="p-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-[--accent] focus:border-transparent" required>
-                <p class="text-red-500 text-xs mt-1 hidden" id="location-error">Address is required</p>
-              </div>
-            </div>
-
-            <div class="mt-4">
-              <label class="block text-sm font-medium text-gray-700 mb-1" for="description">Description</label>
-              <textarea name="description" id="description" rows="3" class="p-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-[--accent] focus:border-transparent"></textarea>
-            </div>
-
-            <div class="flex justify-end gap-3 mt-6">
-              <button type="button" id="cancelBuildingBtn" class="px-5 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg font-medium transition-colors">Cancel</button>
-              <button type="submit" class="px-5 py-2 bg-[--accent] hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors">Save Building</button>
-            </div>
-          </form>
-        </div>
-      </div>
+      <!-- Add Building Modal moved below to overlay the sidebar like other pages -->
 
       {{#if buildings.length}}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="buildingsList">
@@ -188,6 +126,70 @@
     </div>
   </div>
 </main>
+
+  <!-- Add Building Modal -->
+  <div id="addBuildingModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden backdrop-blur-sm">
+    <div class="bg-white rounded-lg p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <h2 class="text-xl font-semibold text-[--primary] mb-6">Add New Building</h2>
+      <form id="addBuildingForm">
+        <input type="hidden" name="college_id" value="{{college.id}}">
+        
+        <!-- Reorganized form into a 2-column grid for better space usage -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1" for="name">Building Name *</label>
+            <input type="text" name="name" id="name" class="p-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-[--accent] focus:border-transparent" required>
+            <p class="text-red-500 text-xs mt-1 hidden" id="name-error">Building name is required</p>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1" for="status">Status *</label>
+            <select name="status" id="status" class="p-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-[--accent] focus:border-transparent" required>
+              <option value="">Select status</option>
+              <option value="Operational">Operational</option>
+              <option value="Under Renovation">Under Renovation</option>
+              <option value="Closed">Closed</option>
+            </select>
+            <p class="text-red-500 text-xs mt-1 hidden" id="status-error">Status is required</p>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1" for="floors">Floors *</label>
+            <input type="number" name="floors" id="floors" class="p-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-[--accent] focus:border-transparent" required min="1">
+            <p class="text-red-500 text-xs mt-1 hidden" id="floors-error">Floors must be a positive number</p>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1" for="totalrooms">Total Rooms *</label>
+            <input type="number" name="totalrooms" id="totalrooms" class="p-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-[--accent] focus:border-transparent" required min="0">
+            <p class="text-red-500 text-xs mt-1 hidden" id="totalrooms-error">Total rooms must be non-negative</p>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1" for="built_year">Built Year *</label>
+            <input type="number" name="built_year" id="built_year" class="p-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-[--accent] focus:border-transparent" required min="1800" max="2100">
+            <p class="text-red-500 text-xs mt-1 hidden" id="built_year-error">Built year must be between 1800 and 2100</p>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1" for="location">Address *</label>
+            <input type="text" name="location" id="location" class="p-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-[--accent] focus:border-transparent" required>
+            <p class="text-red-500 text-xs mt-1 hidden" id="location-error">Address is required</p>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <label class="block text-sm font-medium text-gray-700 mb-1" for="description">Description</label>
+          <textarea name="description" id="description" rows="3" class="p-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-[--accent] focus:border-transparent"></textarea>
+        </div>
+
+        <div class="flex justify-end gap-3 mt-6">
+          <button type="button" id="cancelBuildingBtn" class="px-5 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg font-medium transition-colors">Cancel</button>
+          <button type="submit" class="px-5 py-2 bg-[--accent] hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors">Save Building</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
 {{> footer}}
 
@@ -286,6 +288,7 @@ document.addEventListener('keydown', (event) => {
 function openAddBuildingModal() {
   const modal = document.getElementById('addBuildingModal');
   modal.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
   document.querySelectorAll('.text-red-500').forEach(el => el.classList.add('hidden'));
   setTimeout(() => {
     document.getElementById('name')?.focus();
@@ -296,9 +299,17 @@ function closeAddBuildingModal() {
   const modal = document.getElementById('addBuildingModal');
   const form = document.getElementById('addBuildingForm');
   modal.classList.add('hidden');
+  document.body.style.overflow = 'auto';
   form.reset();
   document.querySelectorAll('.text-red-500').forEach(el => el.classList.add('hidden'));
 }
+
+// Backdrop click to close
+document.getElementById('addBuildingModal')?.addEventListener('click', (e) => {
+  if (e.target === document.getElementById('addBuildingModal')) {
+    closeAddBuildingModal();
+  }
+});
 
 /* =========================== */
 /* BUTTON EVENT HANDLERS */

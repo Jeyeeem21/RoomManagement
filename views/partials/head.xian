@@ -204,8 +204,10 @@
       .animate-card {
         opacity: 0;
         transform-origin: center;
-        animation: rm-card-in 640ms cubic-bezier(.22,.9,.28,1) both;
-        animation-delay: calc(var(--i, 0) * 70ms);
+        /* faster entrance */
+        animation: rm-card-in 360ms cubic-bezier(.22,.9,.28,1) both;
+        /* reduced stagger per item */
+        animation-delay: calc(var(--i, 0) * 30ms);
         will-change: transform, opacity;
         backface-visibility: hidden;
       }
@@ -218,8 +220,9 @@
       .animate-card-rtl {
         opacity: 0;
         transform-origin: center;
-        animation: rm-card-in-rtl 640ms cubic-bezier(.22,.9,.28,1) both;
-        animation-delay: calc(var(--i, 0) * 70ms);
+        /* faster rtl entrance */
+        animation: rm-card-in-rtl 360ms cubic-bezier(.22,.9,.28,1) both;
+        animation-delay: calc(var(--i, 0) * 30ms);
         will-change: transform, opacity;
         backface-visibility: hidden;
       }
@@ -233,8 +236,8 @@
       .animate-row {
         opacity: 0;
         transform-origin: left center;
-        animation: rm-row-in 520ms cubic-bezier(.22,.9,.28,1) both;
-        animation-delay: calc(var(--i, 0) * 50ms);
+        animation: rm-row-in 300ms cubic-bezier(.22,.9,.28,1) both;
+        animation-delay: calc(var(--i, 0) * 20ms);
         will-change: transform, opacity;
         backface-visibility: hidden;
       }

@@ -71,13 +71,12 @@
 
       <!-- Rooms List -->
       <div class="lg:col-span-3 bg-white rounded-xl border border-[--border] hover:border-[--accent] transition-all duration-300 hover:shadow-md p-6">
-        <h2 class="text-lg font-semibold text-[--primary] mb-4">Quick Actions</h2>
-        <div class="flex flex-col gap-4 mb-6">
-          <button id="openAddRoomModal" class="px-3 py-1 bg-[--accent] hover:bg-emerald-700 text-white rounded-lg font-medium text-sm text-center transition-colors w-32">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-lg font-semibold text-[--primary]">Rooms</h2>
+          <button id="openAddRoomModal" class="px-3 py-1 bg-[--accent] hover:bg-emerald-700 text-white rounded-lg font-medium text-sm transition-colors w-32">
             Add Room
           </button>
         </div>
-        <h2 class="text-lg font-semibold text-[--primary] mb-4">Rooms</h2>
         <div class="grid grid-cols-1 gap-4" id="roomsList">
           {{#each rooms}}
           <div class="border border-[--border] rounded-lg p-4 animate-card-rtl card-hover-lift" style="--i: {{@index}}">
@@ -90,41 +89,45 @@
         </div>
       </div>
 
-      <!-- Add Room Modal -->
-      <div id="addRoomModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
-        <div class="bg-white rounded-lg p-6 w-full max-w-md">
-          <h2 class="text-lg font-semibold text-[--primary] mb-4">Add New Room</h2>
-          <form id="addRoomForm">
-            <input type="hidden" name="building_id" value="{{building.id}}">
-            <div class="mb-4">
-              <label class="block text-sm font-medium text-gray-700" for="name">Room Name</label>
-              <input type="text" name="name" id="name" class="mt-1 p-2 w-full border rounded-lg" required>
-              <p class="text-red-500 text-xs mt-1 hidden" id="name-error">Room name is required</p>
-            </div>
-            <div class="mb-4">
-              <label class="block text-sm font-medium text-gray-700" for="capacity">Capacity</label>
-              <input type="number" name="capacity" id="capacity" class="mt-1 p-2 w-full border rounded-lg" required min="1">
-              <p class="text-red-500 text-xs mt-1 hidden" id="capacity-error">Capacity must be a positive number</p>
-            </div>
-            <div class="mb-4">
-              <label class="block text-sm font-medium text-gray-700" for="type">Type</label>
-              <input type="text" name="type" id="type" class="mt-1 p-2 w-full border rounded-lg" required>
-              <p class="text-red-500 text-xs mt-1 hidden" id="type-error">Type is required</p>
-            </div>
-            <div class="mb-4">
-              <label class="block text-sm font-medium text-gray-700" for="description">Description</label>
-              <textarea name="description" id="description" class="mt-1 p-2 w-full border rounded-lg"></textarea>
-            </div>
-            <div class="flex justify-end gap-4">
-              <button type="button" id="cancelRoomBtn" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg">Cancel</button>
-              <button type="submit" class="px-4 py-2 bg-[--accent] text-white rounded-lg">Add Room</button>
-            </div>
-          </form>
-        </div>
-      </div>
+      <!-- Add Room Modal (moved below main to overlay sidebar) -->
+      
     </div>
   </div>
 </main>
+
+  <!-- Add Room Modal -->
+  <div id="addRoomModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden backdrop-blur-sm">
+    <div class="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
+      <h2 class="text-lg font-semibold text-[--primary] mb-4">Add New Room</h2>
+      <form id="addRoomForm">
+        <input type="hidden" name="building_id" value="{{building.id}}">
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700" for="name">Room Name</label>
+          <input type="text" name="name" id="name" class="mt-1 p-2 w-full border rounded-lg" required>
+          <p class="text-xs text-gray-500 mt-1" id="rooms-availability">Available: {{building.available_rooms}}/{{building.totalrooms}}</p>
+          <p class="text-red-500 text-xs mt-1 hidden" id="name-error">Room name is required</p>
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700" for="capacity">Capacity</label>
+          <input type="number" name="capacity" id="capacity" class="mt-1 p-2 w-full border rounded-lg" required min="1">
+          <p class="text-red-500 text-xs mt-1 hidden" id="capacity-error">Capacity must be a positive number</p>
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700" for="type">Type</label>
+          <input type="text" name="type" id="type" class="mt-1 p-2 w-full border rounded-lg" required>
+          <p class="text-red-500 text-xs mt-1 hidden" id="type-error">Type is required</p>
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700" for="description">Description</label>
+          <textarea name="description" id="description" class="mt-1 p-2 w-full border rounded-lg"></textarea>
+        </div>
+        <div class="flex justify-end gap-4">
+          <button type="button" id="cancelRoomBtn" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-[--accent] text-white rounded-lg">Add Room</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
 {{> footer}}
 
@@ -225,6 +228,7 @@ document.addEventListener('keydown', (event) => {
 function openAddRoomModal() {
   const modal = document.getElementById('addRoomModal');
   modal.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
   document.querySelectorAll('.text-red-500').forEach(el => el.classList.add('hidden'));
   setTimeout(() => {
     document.getElementById('name')?.focus();
@@ -235,9 +239,15 @@ function closeAddRoomModal() {
   const modal = document.getElementById('addRoomModal');
   const form = document.getElementById('addRoomForm');
   modal.classList.add('hidden');
+  document.body.style.overflow = 'auto';
   form.reset();
   document.querySelectorAll('.text-red-500').forEach(el => el.classList.add('hidden'));
 }
+
+// Backdrop click to close
+document.getElementById('addRoomModal')?.addEventListener('click', (e) => {
+  if (e.target === document.getElementById('addRoomModal')) closeAddRoomModal();
+});
 
 /* ===========================
    BUTTON EVENT HANDLERS
@@ -332,8 +342,34 @@ async function refreshRoomsList(buildingId) {
           </div>
         `).join('')
       : '<p class="text-sm text-gray-600">No rooms found for this building.</p>';
+    // Update availability display after refreshing the DOM
+    updateRoomsAvailability();
   } catch (error) {
     console.error('Error refreshing rooms list:', error);
+  }
+}
+
+// Update the rooms availability line in the modal to reflect actual rooms present
+function updateRoomsAvailability() {
+  try {
+    const totalEl = document.getElementById('total-rooms');
+    const total = totalEl ? parseInt(totalEl.textContent || totalEl.innerText || '0', 10) : 0;
+    const roomsList = document.getElementById('roomsList');
+    let current = 0;
+    if (roomsList) {
+      // Count direct room cards (skip placeholder paragraphs)
+      current = Array.from(roomsList.children).filter(n => n.tagName === 'DIV').length;
+    }
+    const availEl = document.getElementById('rooms-availability');
+    if (availEl) {
+      availEl.textContent = `Available: ${current}/${total}`;
+    }
+
+    // Optionally update the quick-stats available-rooms to reflect current rooms present
+    const quickAvailable = document.getElementById('available-rooms');
+    if (quickAvailable) quickAvailable.textContent = current;
+  } catch (e) {
+    console.error('Error updating rooms availability:', e);
   }
 }
 
@@ -354,5 +390,10 @@ document.addEventListener('keydown', (event) => {
     }
     event.preventDefault();
   }
+});
+
+// Initialize availability counts on page load
+document.addEventListener('DOMContentLoaded', () => {
+  updateRoomsAvailability();
 });
 </script>

@@ -118,64 +118,6 @@
           }
         });
       });
-
-      // Global duplicate-submit guard: prevents accidental double submission (e.g., double Enter)
-      (function preventDuplicateSubmits(){
-        const LOCK_TIMEOUT = 8000; // fallback unlock (ms)
-
-        // Use capture phase so this runs before page-level handlers
-        document.addEventListener('submit', function (e) {
-          const form = e.target;
-          if (!(form instanceof HTMLFormElement)) return;
-
-          // If already submitted, block duplicate
-          if (form.dataset.submitted === 'true') {
-            e.preventDefault();
-            if (window.Swal) {
-              Swal.fire({
-                toast: true,
-                position: 'bottom-end',
-                icon: 'info',
-                title: 'Submission already in progress',
-                showConfirmButton: false,
-                timer: 900
-              });
-            }
-            return;
-          }
-
-          // Mark as submitted and disable submit controls
-          form.dataset.submitted = 'true';
-          Array.from(form.querySelectorAll('button[type="submit"], input[type="submit"]')).forEach(btn => {
-            try {
-              btn.disabled = true;
-              // store previous text for restoration
-              if (btn.tagName === 'BUTTON') btn.dataset.prevHtml = btn.innerHTML;
-              if (btn.tagName === 'BUTTON') btn.innerHTML = '<span class="opacity-75">Processing…</span>';
-            } catch (err) { /* ignore */ }
-          });
-
-          // Fallback: unlock the form after a timeout in case the request hung
-          setTimeout(() => {
-            if (form.dataset.submitted === 'true') {
-              form.dataset.submitted = 'false';
-              Array.from(form.querySelectorAll('button[type="submit"], input[type="submit"]')).forEach(btn => {
-                try {
-                  btn.disabled = false;
-                  if (btn.tagName === 'BUTTON' && btn.dataset.prevHtml) {
-                    btn.innerHTML = btn.dataset.prevHtml;
-                    delete btn.dataset.prevHtml;
-                  }
-                } catch (err) { /* ignore */ }
-              });
-            }
-          }, LOCK_TIMEOUT);
-
-        }, true);
-
-        // When navigating via back/forward, clear submitted flags so forms are usable
-        window.addEventListener('pageshow', () => document.querySelectorAll('form').forEach(f => f.dataset.submitted = 'false'));
-      })();
     </script>
 </body>
 </html>
