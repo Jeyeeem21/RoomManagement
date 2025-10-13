@@ -120,6 +120,11 @@ router.get("/schedules/get/:id", schedulecontroller.getSchedule);
 router.post("/schedules/update/:id", schedulecontroller.updateSchedule);
 router.get("/schedules/export/program", schedulecontroller.exportProgramSchedules);
 router.get("/schedules/export/professor", schedulecontroller.exportProfessorSchedules);
+// Lightweight endpoint to let client pages check whether the user is authenticated.
+// Used by the login page to detect a cached restore and redirect if the session is active.
+router.get('/session', (req, res) => {
+  res.json({ authenticated: !!(req.session && req.session.userId) });
+});
 
 export default router;
 

@@ -8,11 +8,17 @@
 <aside id="sidebar" class="sidebar bg-white sidebar-transition flex flex-col border-r border-gray-200 shadow-md animate-fade-in w-64" aria-label="Sidebar">
   <div class="p-5 border-b border-gray-100 flex justify-between items-center">
     <div class="flex items-center gap-3 mb-1 transition-all duration-300">
-      <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-bold text-lg shadow-sm hover:shadow-lg transform hover:scale-105 transition-transform duration-300">
-        M
-      </div>
+      {{#if mainContent.logo}}
+        <div class="w-10 h-10 rounded-lg overflow-hidden flex items-center justify-center shadow-sm">
+          <img src="/Uploads/{{mainContent.logo}}" alt="Logo" class="w-full h-full object-cover" />
+        </div>
+      {{else}}
+        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-bold text-lg shadow-sm hover:shadow-lg transform hover:scale-105 transition-transform duration-300">
+          M
+        </div>
+      {{/if}}
       <div class="logo-text transition-all duration-300">
-        <div class="text-base font-semibold text-gray-900">MBC University</div>
+        <div class="text-base font-semibold text-gray-900">{{#if mainContent.name}}{{mainContent.name}}{{else}}MBC University{{/if}}</div>
         <div class="text-xs text-gray-500 font-normal">Room Management</div>
       </div>
     </div>

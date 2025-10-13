@@ -102,9 +102,12 @@ const roomcontroller = {
   deleteRoom: async (req, res) => {
     try {
       const { id } = req.body;
-      const [deleted] = await Room.destroy({ where: { id } });
-      if (deleted) res.json({ message: "Room deleted successfully" });
-      else res.status(404).json({ error: "Room not found" });
+      // Room.destroy returns the number of rows deleted (integer)
+      const deleted = await Room.destroy({ where: { id } });
+      if (deleted && Number(deleted) > 0) {
+        return res.json({ message: "Room deleted successfully" });
+      }
+      return res.status(404).json({ error: "Room not found" });
     } catch (error) {
       console.error("Error deleting room:", error);
       res.status(500).json({ error: "Internal server error" });

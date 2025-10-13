@@ -1,4 +1,33 @@
 {{> head title="Login" }}
+<script>
+  // Fallback: if server signals the user is authenticated, redirect to dashboard.
+  // The server-side controller now redirects if session exists, but some
+  // browsers may show cached pages; this protects against that.
+  (function(){
+    try {
+      var isAuth = "{{isAuthenticated}}" === "true";
+      if (isAuth) {
+        window.location.replace('/dashboard');
+      }
+      // Also handle browsers that restore pages from bfcache (Back/Forward cache).
+      // The pageshow event fires when a page is restored from bfcache; fetch /session
+      // to ensure the current session state and redirect if authenticated.
+      window.addEventListener('pageshow', async (ev) => {
+        try {
+          const r = await fetch('/session', { credentials: 'same-origin' });
+          if (r.ok) {
+            const j = await r.json();
+            if (j.authenticated) window.location.replace('/dashboard');
+          }
+        } catch (e) {
+          // ignore
+        }
+      });
+    } catch(e) {
+      // Ignore template evaluation issues
+    }
+  })();
+</script>
 <main class="min-h-screen bg-gray-50 flex items-center justify-center p-4">
   <div class="max-w-md w-full">
     
@@ -42,7 +71,7 @@
       {{/if}}
 
       <!-- Login Form -->
-      <form action="/login" method="POST" class="space-y-6" id="loginForm" {{#if lockout}}style="display: none;"{{/if}}>
+  <form action="/login" method="POST" class="space-y-6" id="loginForm" {{#if lockout}}style="display: none;"{{/if}}>
         <div>
           <label for="email" class="block text-sm font-medium text-slate-700 mb-2">Email Address</label>
           <input 
@@ -107,6 +136,49 @@
           Sign In
         </button>
       </form>
+
+      <script>
+        // Submit the login form via fetch so we can use location.replace on success
+        document.addEventListener('DOMContentLoaded', () => {
+          const form = document.getElementById('loginForm');
+          if (!form) return;
+
+          form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const body = new URLSearchParams();
+            for (const pair of formData.entries()) {
+              body.append(pair[0], pair[1]);
+            }
+
+            try {
+              const res = await fetch(form.action, {
+                method: 'POST',
+                headers: {
+                  'X-Requested-With': 'XMLHttpRequest',
+                  'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: body.toString(),
+                credentials: 'same-origin'
+              });
+
+              if (res.ok) {
+                // Successful login — replace history entry to prevent back navigation to login
+                window.location.replace('/dashboard');
+                return;
+              }
+
+              const data = await res.json().catch(()=>({}));
+              // On failure, reload the page to show server-set flash messages (or show inline)
+              window.location.reload();
+
+            } catch (err) {
+              console.error('Login request failed', err);
+              window.location.reload();
+            }
+          });
+        });
+      </script>
 
       <!-- Sign up link -->
       <!-- <p class="mt-6 text-center text-sm text-slate-600">

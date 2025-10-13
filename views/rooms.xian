@@ -4,7 +4,7 @@
 <main class="main-content min-h-screen p-8">
   <div class="flex items-center justify-between mb-6">
     <div>
-      <nav class="text-sm text-slate-600">Home / Rooms</nav>
+      <!-- <nav class="text-sm text-slate-600">Home / Rooms</nav> -->
       <h2 class="text-2xl font-semibold text-slate-900">Rooms</h2>
     </div>
   </div>
@@ -228,9 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
       Swal.fire({ icon: 'error', title: 'Error', text: err.message || 'Failed to save room' });
     }
   });
-    /* ===========================
-   BUILDING MODAL KEYBOARD SHORTCUTS
-   =========================== */
+   
 document.addEventListener('keydown', (event) => {
   const modal = document.getElementById('roomModal');
   const form = document.getElementById('roomForm');

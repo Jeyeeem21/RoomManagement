@@ -26,6 +26,14 @@ SOFTWARE.
 import { Content } from "../models/Content.js";
 
 export const homePage = async (req, res) => {
+  // If user is already authenticated, redirect to dashboard so Back won't show Home.
+  if (req.session && req.session.userId) {
+    return res.redirect('/dashboard');
+  }
+  // Prevent caching of the home page so browser back/forward will revalidate.
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
   try {
     const content = await Content.findOne(); // Fetch the first content record
     res.render("home", { title: "MinSu Home", content });

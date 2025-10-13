@@ -62,6 +62,20 @@ window.addEventListener('scroll', () => {
     el.style.transform = `translateY(${yPos}px)`;
   });
 });
+
+// Ensure that if the page is restored from bfcache (Back/Forward cache)
+// we verify the session and redirect to dashboard when authenticated.
+window.addEventListener('pageshow', async (ev) => {
+  try {
+    const r = await fetch('/session', { credentials: 'same-origin' });
+    if (r.ok) {
+      const j = await r.json();
+      if (j.authenticated) window.location.replace('/dashboard');
+    }
+  } catch (e) {
+    // ignore
+  }
+});
 </script>
 
 <style>

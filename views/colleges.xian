@@ -259,54 +259,97 @@
  /* ====== KEYBOARD SHORTCUTS FOR MODAL CONTROL ====== */
 document.addEventListener('keydown', (event) => {
   const modal = document.getElementById('collegeModal');
-  const isModalOpen = !modal.classList.contains('hidden');
   const form = document.getElementById('collegeForm');
+  const isModalOpen = !modal.classList.contains('hidden');
 
-  // === Ctrl + Enter : Open modal and focus College Name ===
+  // === Ctrl + Enter → Open modal & focus College Name ===
   if (event.ctrlKey && event.key === 'Enter') {
+    event.preventDefault();
     openModal();
     setTimeout(() => {
-      const firstField = document.getElementById('collegeName');
-      if (firstField) firstField.focus();
+      document.getElementById('collegeName')?.focus();
     }, 100);
-    event.preventDefault();
   }
 
-  // === Enter : Move to next input field ===
-  if (event.key === 'Enter' && !event.ctrlKey && isModalOpen) {
-    const inputs = Array.from(form.querySelectorAll('input, select, textarea, button'));
-    const index = inputs.indexOf(document.activeElement);
-    if (index > -1 && index < inputs.length - 1) {
+  // === Enter → Move to next input field ===
+ if (event.key === 'Enter' && !event.ctrlKey && isModalOpen) {
+  const active = document.activeElement;
+  const inputs = Array.from(form.querySelectorAll('input, select, textarea, button'));
+  const index = inputs.indexOf(active);
+
+  // ✅ Special handling for <select>
+  if (active && active.tagName === 'SELECT') {
+    const hasValue = active.value && active.value.trim() !== '';
+
+    if (!hasValue) {
+      // If no value yet, allow default Enter (opens dropdown)
+      return;
+    } else {
+      // If value already selected, move to next field
       event.preventDefault();
-      inputs[index + 1].focus();
-    } else if (index === inputs.length - 1) {
-      // If already at the last button (Save), submit form
-      event.preventDefault();
-      form.requestSubmit();
+      if (index > -1 && index < inputs.length - 1) {
+        inputs[index + 1].focus();
+      } else if (index === inputs.length - 1) {
+        form.requestSubmit();
+      }
+      return;
     }
   }
 
-  // === Ctrl + Esc : Clear all fields in the form ===
-  if (event.ctrlKey && event.key.toLowerCase() === 'd' && isModalOpen) {
-    form.reset();
-    const firstField = document.getElementById('collegeName');
-    if (firstField) firstField.focus();
+  // ✅ For all other input types
+  if (index > -1 && index < inputs.length - 1) {
     event.preventDefault();
+    inputs[index + 1].focus();
+  } else if (index === inputs.length - 1) {
+    event.preventDefault();
+    form.requestSubmit();
+  }
+}
+
+  // === Ctrl + D → Clear all fields ===
+  if (event.ctrlKey && event.key.toLowerCase() === 'd' && isModalOpen) {
+    event.preventDefault();
+    form.reset();
+    document.getElementById('collegeName')?.focus();
+    Swal.fire({
+      toast: true,
+      position: 'bottom-end',
+      icon: 'info',
+      title: 'All fields cleared.',
+      showConfirmButton: false,
+      timer: 1200
+    });
   }
 
-  // === Esc : Clear only the current field ===
+  // === Esc → Clear only current textbox ===
   if (!event.ctrlKey && event.key === 'Escape' && isModalOpen) {
     const active = document.activeElement;
     if (active && active.tagName === 'INPUT') {
+      event.preventDefault();
       active.value = '';
+      Swal.fire({
+        toast: true,
+        position: 'bottom-end',
+        icon: 'info',
+        title: 'Textbox cleared.',
+        showConfirmButton: false,
+        timer: 800
+      });
     }
-    event.preventDefault();
   }
 
-  // === Ctrl + B : Cancel/Close the modal ===
+  // === Ctrl + B → Cancel / Close modal ===
   if (event.ctrlKey && event.key.toLowerCase() === 'b' && isModalOpen) {
-    closeModal();
     event.preventDefault();
+    closeModal();
+    Swal.fire({
+      toast: true,
+      position: 'bottom-end',
+      icon: 'warning',
+      title: 'Modal closed.',
+      showConfirmButton: false,
+      timer: 1000
+    });
   }
 });
 

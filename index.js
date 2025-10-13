@@ -30,6 +30,7 @@ import flash from "connect-flash";
 import router from "./routes/index.js";
 import fs from 'fs';
 import hbs from "hbs";
+import { Content } from "./models/Content.js";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 // import Handlebars from "handlebars";
@@ -83,6 +84,33 @@ hbs.registerHelper('ifEquals', function(arg1, arg2, options) {
 app.use((req, res, next) => {
   res.locals.success_msg = req.flash("success_msg");
   res.locals.error_msg = req.flash("error_msg");
+  next();
+});
+
+// Prevent caching of pages that should not be stored by the browser.
+// This ensures that when a user navigates with the browser back button
+// the browser will re-request the page from the server and receive the
+// correct redirect if the user is already authenticated.
+app.use((req, res, next) => {
+  if (req.method === 'GET') {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+  }
+  next();
+});
+
+// Inject mainContent (site name/logo) into all views so partials like the sidebar
+// can render the site branding without each controller having to pass it.
+app.use(async (req, res, next) => {
+  try {
+    const mainContent = await Content.findByPk(1);
+    // pass a plain object to the templates
+    res.locals.mainContent = mainContent ? mainContent.get({ plain: true }) : null;
+  } catch (err) {
+    console.error('❌ Failed to load mainContent:', err);
+    res.locals.mainContent = null;
+  }
   next();
 });
 

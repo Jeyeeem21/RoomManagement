@@ -4,6 +4,12 @@ import crypto from "crypto";
 await sequelize.sync();
 
 export const loginPage = (req, res) => {
+  // If user already has an active session, redirect to dashboard to
+  // prevent showing the login page when using the browser back button.
+  if (req.session && req.session.userId) {
+    return res.redirect('/dashboard');
+  }
+
   const now = Date.now();
   const lockoutUntil = req.session.lockoutUntil || 0;
   let lockout = false;
@@ -28,11 +34,18 @@ export const loginPage = (req, res) => {
   req.session.lockout = false;
   req.session.remainingTime = 0;
 
-  res.render("login", { 
-    title: "Login", 
-    error, 
-    lockout, 
-    remainingTime 
+  // Prevent caching of the login page so the browser will re-request it
+  // and receive the redirect above when the user is already authenticated.
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
+
+  res.render("login", {
+    title: "Login",
+    error,
+    lockout,
+    remainingTime,
+    isAuthenticated: false
   });
 };
 
@@ -53,6 +66,9 @@ export const loginUser = async (req, res) => {
   const remainingTime = Math.ceil((lockoutUntil - now) / 1000);
   req.session.lockout = true;
   req.session.remainingTime = remainingTime;
+  if (req.get('X-Requested-With') === 'XMLHttpRequest') {
+    return res.status(429).json({ success: false, lockout: true, remainingTime });
+  }
   return res.redirect("/login");
 }
 
@@ -70,11 +86,17 @@ export const loginUser = async (req, res) => {
     } else {
       req.session.error = `User not found. ${3 - req.session.loginAttempts} attempts remaining.`;
     }
+    if (req.get('X-Requested-With') === 'XMLHttpRequest') {
+      return res.status(401).json({ success: false, error: req.session.error || 'User not found.' });
+    }
     return res.redirect("/login");
   }
 
   if (user.status !== "active") {
     req.session.error = `Account is not active.`;
+    if (req.get('X-Requested-With') === 'XMLHttpRequest') {
+      return res.status(403).json({ success: false, error: req.session.error });
+    }
     return res.redirect("/login");
   }
 
@@ -88,6 +110,9 @@ export const loginUser = async (req, res) => {
     } else {
       req.session.error = `Incorrect password. ${3 - req.session.loginAttempts} attempts remaining.`;
     }
+    if (req.get('X-Requested-With') === 'XMLHttpRequest') {
+      return res.status(401).json({ success: false, error: req.session.error });
+    }
     return res.redirect("/login");
   }
 
@@ -95,6 +120,12 @@ export const loginUser = async (req, res) => {
   req.session.loginAttempts = 0;
   req.session.lockoutUntil = null;
   req.session.userId = user.id;
+  // If this was an AJAX login (we'll send fetch from the login page), respond with JSON
+  // so the client can call location.replace and remove the login page from history.
+  if (req.get('X-Requested-With') === 'XMLHttpRequest') {
+    return res.json({ success: true });
+  }
+
   res.redirect("/dashboard");
 };
 

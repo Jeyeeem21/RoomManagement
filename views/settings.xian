@@ -5,7 +5,7 @@
 <main class="main-content min-h-screen p-8">
   <div class="flex items-center justify-between mb-6">
     <div>
-      <nav class="text-sm text-slate-600">Home / Admin</nav>
+      <!-- <nav class="text-sm text-slate-600">Home / Admin</nav> -->
       <h2 class="text-2xl font-semibold text-slate-900">Admin Settings</h2>
     </div>
     <button onclick="showGeneralSettingsModal()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors">
@@ -147,7 +147,12 @@
           </div>
           <div>
             <label class="block text-sm font-medium text-slate-700 mb-1">Password</label>
-            <input id="password" name="password" type="password" class="w-full border border-slate-300 rounded-lg px-3 py-2" placeholder="Enter new password (optional for edit)" />
+            <div class="relative">
+              <input id="password" name="password" type="password" class="w-full border border-slate-300 rounded-lg px-3 py-2 pr-10" placeholder="Enter new password (optional for edit)" />
+              <button type="button" id="togglePasswordBtn" aria-label="Toggle password visibility" class="absolute inset-y-0 right-2 flex items-center text-slate-500 hover:text-slate-700">
+                <i id="passwordIcon" class="fas fa-eye"></i>
+              </button>
+            </div>
             <p class="text-xs text-slate-500 mt-1">Leave blank to keep existing password when editing.</p>
           </div>
           <div class="flex justify-end space-x-2">
@@ -380,24 +385,54 @@ document.addEventListener('keydown', (event) => {
     }
   }
 
+  // Helper: SHA-1 hex digest using Web Crypto
+  async function sha1Hex(message) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(message);
+    const hashBuffer = await crypto.subtle.digest('SHA-1', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
   document.getElementById('userForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const data = {
-      name: document.getElementById('name').value.trim(),
-      email: document.getElementById('email').value.trim(),
-      role: document.getElementById('role').value,
-      status: document.getElementById('status').value,
-      password: document.getElementById('password').value.trim()
-    };
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const role = document.getElementById('role').value;
+    const status = document.getElementById('status').value;
+    const rawPassword = document.getElementById('password').value;
+
+    // Password complexity: at least 8 chars, letters, numbers and special chars
+    if (rawPassword && rawPassword.length > 0) {
+      const lengthOk = rawPassword.length >= 8;
+      const hasLetter = /[A-Za-z]/.test(rawPassword);
+      const hasNumber = /[0-9]/.test(rawPassword);
+      const hasSpecial = /[^A-Za-z0-9]/.test(rawPassword);
+      if (!(lengthOk && hasLetter && hasNumber && hasSpecial)) {
+        return Swal.fire('Weak password', 'Password must be at least 8 characters and include letters, numbers, and a special character.', 'warning');
+      }
+    }
 
     try {
+      let passwordToSend = '';
+      if (rawPassword && rawPassword.length > 0) {
+        // Hash with SHA-1 as requested (note: SHA-1 is not recommended for modern security, but used per request)
+        passwordToSend = await sha1Hex(rawPassword);
+      }
+
+      const data = { name, email, role, status, password: passwordToSend };
+
       const response = await fetch(e.target.action, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
         credentials: 'include'
       });
-      if (!response.ok) throw new Error('Failed to save user');
+
+      if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(errText || 'Failed to save user');
+      }
 
       Swal.fire('Success', 'User saved successfully!', 'success').then(() => {
         closeModal();
@@ -407,6 +442,23 @@ document.addEventListener('keydown', (event) => {
       Swal.fire('Error', `Failed to save user: ${error.message}`, 'error');
     }
   });
+  // Password visibility toggle
+  const togglePasswordBtn = document.getElementById('togglePasswordBtn');
+  if (togglePasswordBtn) {
+    togglePasswordBtn.addEventListener('click', () => {
+      const pwd = document.getElementById('password');
+      const icon = document.getElementById('passwordIcon');
+      if (!pwd) return;
+      if (pwd.type === 'password') {
+        pwd.type = 'text';
+        if (icon) { icon.classList.remove('fa-eye'); icon.classList.add('fa-eye-slash'); }
+      } else {
+        pwd.type = 'password';
+        if (icon) { icon.classList.remove('fa-eye-slash'); icon.classList.add('fa-eye'); }
+      }
+      pwd.focus();
+    });
+  }
    document.addEventListener('keydown', (event) => {
   if (event.ctrlKey && event.altKey) {
     switch (event.key.toLowerCase()) {

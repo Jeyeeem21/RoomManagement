@@ -39,11 +39,17 @@ const buildingcontroller = {
       });
       const buildingIdToRooms = Object.fromEntries(roomAgg.map(r => [r.building_id, Number(r.rooms) || 0]));
 
-      const buildingsView = buildings.map(b => ({
-        ...b.get({ plain: true }),
-        college: collegeIdToName[b.college_id] || "Unknown",
-        totalrooms: buildingIdToRooms[b.id] || 0, // Match buildings.hbs field
-      }));
+      const buildingsView = buildings.map(b => {
+        const plain = b.get({ plain: true });
+        return {
+          ...plain,
+          college: collegeIdToName[plain.college_id] || "Unknown",
+          // Use the totalrooms value from the DB (explicit total rooms for the building)
+          totalrooms: plain.totalrooms ?? 0,
+          // Provide current_rooms as the actual counted number of Room records
+          current_rooms: buildingIdToRooms[plain.id] || 0,
+        };
+      });
 
       res.render("buildings", {
         active: "buildings",
