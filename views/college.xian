@@ -1,7 +1,7 @@
 {{> head title="College Details" }}
 {{> sidebar }}
 
-<main class="main-content min-h-screen p-8" style="background: linear-gradient(135deg, #e6f0ea 0%, var(--bg-light) 100%);">
+<main class="main-content min-h-screen p-8 animate-page" style="background: linear-gradient(135deg, #e6f0ea 0%, var(--bg-light) 100%);">
   <div class="max-w-7xl mx-auto">
 
     <!-- Header -->
@@ -154,7 +154,7 @@
       {{#if buildings.length}}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="buildingsList">
           {{#each buildings}}
-          <div class="bg-white rounded-xl border border-[--border] hover:border-[--accent] transition-all duration-300 hover:shadow-md p-4">
+          <div class="bg-white rounded-xl border border-[--border] hover:border-[--accent] transition-all duration-300 hover:shadow-md p-4 animate-card-rtl card-hover-lift" style="--i: {{@index}}">
             <div class="flex items-center gap-4">
               <div class="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center">
                 <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">

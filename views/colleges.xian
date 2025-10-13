@@ -47,7 +47,7 @@
       <div id="collegeGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {{#if colleges.length}}
           {{#each colleges}}
-          <div class="college-card group bg-white rounded-xl border border-[--border] hover:border-[--accent] transition-all duration-300 hover:shadow-lg overflow-hidden" data-name="{{name}}" data-dean="{{dean}}">
+          <div class="college-card group bg-white rounded-xl border border-[--border] hover:border-[--accent] transition-all duration-300 hover:shadow-lg overflow-hidden animate-card-rtl card-hover-lift" style="--i: {{@index}}" data-name="{{name}}" data-dean="{{dean}}">
             <div class="p-6">
               <div class="flex items-start justify-between mb-4">
                 <div class="w-12 h-12 rounded-lg bg-emerald-50 flex items-center justify-center flex-shrink-0">

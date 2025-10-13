@@ -1,7 +1,7 @@
 {{> head title="Rooms"}}
 {{> sidebar active=active user=user}}
 
-<main class="main-content min-h-screen p-8">
+<main class="main-content min-h-screen p-8 animate-page">
   <div class="flex items-center justify-between mb-6">
     <div>
       <!-- <nav class="text-sm text-slate-600">Home / Rooms</nav> -->
@@ -38,7 +38,7 @@
           </thead>
           <tbody class="divide-y divide-slate-200">
             {{#each rooms}}
-            <tr class="hover:bg-slate-50 transition-colors">
+            <tr class="hover:bg-slate-50 transition-colors animate-card" style="--i: {{@index}}">
               <td class="px-6 py-4 text-slate-900 font-medium">{{name}}</td>
               <td class="px-6 py-4 text-slate-600">{{building_name}}</td>
               <td class="px-6 py-4 text-slate-600">{{capacity}}</td>
@@ -127,7 +127,30 @@ document.addEventListener('DOMContentLoaded', () => {
       columnDefs: [
         { targets: 2, type: 'num' } // Capacity numeric sort
       ],
-      dom: 't<"flex items-center justify-between px-6 py-3"lip>'
+      dom: 't<"flex items-center justify-between px-6 py-3"lip>',
+      drawCallback: function(settings) {
+        // animate visible rows with stagger using requestAnimationFrame to avoid layout thrash
+        const api = this.api();
+        const nodes = api.rows({ page: 'current' }).nodes();
+        const $rows = $(nodes);
+        $rows.removeClass('animate-row');
+        $rows.css('--i', null);
+
+        // Batch updates inside a single RAF
+        requestAnimationFrame(() => {
+          for (let i = 0; i < nodes.length; i++) {
+            const row = nodes[i];
+            row.style.setProperty('--i', i);
+          }
+
+          // Force a single reflow
+          void nodes[0] && nodes[0].offsetWidth;
+
+          for (let i = 0; i < nodes.length; i++) {
+            nodes[i].classList.add('animate-row');
+          }
+        });
+      }
     });
 
     // Custom search bar

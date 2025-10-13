@@ -2,7 +2,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 {{> sidebar active=active user=user}}
 
-<main class="main-content min-h-screen p-8">
+<main class="main-content min-h-screen p-8 animate-page">
   <div class="flex items-center justify-between mb-6">
     <div>
       <!-- <nav class="text-sm text-slate-600">Home / Admin</nav> -->
@@ -88,7 +88,7 @@
           </thead>
           <tbody class="divide-y divide-slate-200">
             {{#each users}}
-            <tr class="hover:bg-slate-50 transition-colors">
+            <tr class="hover:bg-slate-50 transition-colors animate-card" style="--i: {{@index}}">
               <td class="px-6 py-4 text-slate-900 font-medium">{{name}}</td>
               <td class="px-6 py-4 text-slate-600">{{role}}</td>
               <td class="px-6 py-4">

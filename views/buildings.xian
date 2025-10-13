@@ -1,7 +1,7 @@
 {{> head title="Buildings"}}
 {{> sidebar active=active user=user}} <!-- Removed redundant initials -->
 
-<main class="main-content min-h-screen p-8" style="background: linear-gradient(135deg, #e6f0ea 0%, var(--bg-light) 100%);">
+<main class="main-content min-h-screen p-8 animate-page" style="background: linear-gradient(135deg, #e6f0ea 0%, var(--bg-light) 100%);">
   <div class="max-w-7xl mx-auto">
     <!-- Header -->
     <div class="flex items-center justify-between mb-8">
@@ -47,7 +47,7 @@
     <div id="buildingGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {{#if buildings.length}}
         {{#each buildings}}
-        <div class="building-card group bg-white rounded-xl border border-[--border] hover:border-[--accent] transition-all duration-300 hover:shadow-md overflow-hidden" data-name="{{name}}" data-college="{{college}}">
+  <div class="building-card group bg-white rounded-xl border border-[--border] hover:border-[--accent] transition-all duration-300 hover:shadow-md overflow-hidden animate-card-rtl card-hover-lift" style="--i: {{@index}}" data-name="{{name}}" data-college="{{college}}">
           <div class="p-6">
             <div class="flex items-start justify-between mb-4">
               <div class="w-12 h-12 rounded-lg bg-emerald-50 flex items-center justify-center flex-shrink-0">

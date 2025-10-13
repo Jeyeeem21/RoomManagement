@@ -28,7 +28,7 @@
     }
   })();
 </script>
-<main class="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+<main class="min-h-screen bg-gray-50 flex items-center justify-center p-4 animate-page">
   <div class="max-w-md w-full">
     
         <div class="bg-white rounded-lg border border-slate-200 p-8 hover:shadow-lg transition-all duration-300">

@@ -1,7 +1,7 @@
 {{> head title="Schedules"}}
 {{> sidebar active=active user=user}}
 
-<main class="main-content min-h-screen p-8">
+<main class="main-content min-h-screen p-8 animate-page">
   <div class="max-w-7xl mx-auto">
     <!-- Header -->
     <div class="mb-8">
@@ -619,6 +619,34 @@
               }
             }
           ],
+          drawCallback: function() {
+            // Update schedule count on each draw
+            try {
+              const count = this.api().data().length;
+              document.getElementById('scheduleCount').textContent = count;
+            } catch (error) {
+              console.error('Error updating schedule count:', error);
+              document.getElementById('scheduleCount').textContent = '0';
+            }
+
+            // Animate visible rows smoothly using RAF
+            const api = this.api();
+            const nodes = api.rows({ page: 'current' }).nodes();
+            const $rows = $(nodes);
+            $rows.removeClass('animate-row');
+            $rows.css('--i', null);
+
+            requestAnimationFrame(() => {
+              for (let i = 0; i < nodes.length; i++) {
+                nodes[i].style.setProperty('--i', i);
+              }
+              // Force reflow once
+              void nodes[0] && nodes[0].offsetWidth;
+              for (let i = 0; i < nodes.length; i++) {
+                nodes[i].classList.add('animate-row');
+              }
+            });
+          },
           order: [[0, 'asc']],
           pageLength: 10,
           lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
@@ -640,17 +668,7 @@
             processing: "Loading schedules..."
           },
           initComplete: function() {
-            // Update schedule count
-            try {
-              const count = this.api().data().length;
-              document.getElementById('scheduleCount').textContent = count;
-            } catch (error) {
-              console.error('Error updating schedule count:', error);
-              document.getElementById('scheduleCount').textContent = '0';
-            }
-          },
-          drawCallback: function() {
-            // Update schedule count on each draw
+            // Initial schedule count
             try {
               const count = this.api().data().length;
               document.getElementById('scheduleCount').textContent = count;

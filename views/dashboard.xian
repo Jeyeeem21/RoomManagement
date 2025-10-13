@@ -4,7 +4,7 @@
 
 {{> sidebar }}
 
-<main class="main-content min-h-screen p-4 md:p-8 bg-gray-50 transition-all duration-300">
+<main class="main-content min-h-screen p-4 md:p-8 bg-gray-50 transition-all duration-300 animate-page">
   <div class="max-w-7xl mx-auto">
     <!-- Header -->
     <div class="flex items-center justify-between mb-6 animate-fade-in">

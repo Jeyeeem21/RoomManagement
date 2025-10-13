@@ -162,6 +162,89 @@
       .sidebar::-webkit-scrollbar-thumb:hover {
         background: #94a3b8;
       }
+      /* Page animation utilities (used by views) */
+      @keyframes rm-fade-up {
+        from { opacity: 0; transform: translateY(10px) translateZ(0); }
+        60% { opacity: 0.98; transform: translateY(3px) translateZ(0); }
+        to { opacity: 1; transform: translateY(0) translateZ(0); }
+      }
+      @keyframes rm-fade {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      .animate-page {
+        animation: rm-fade-up 620ms cubic-bezier(.22,.9,.28,1) both;
+        will-change: transform, opacity;
+        backface-visibility: hidden;
+        perspective: 1000;
+      }
+      .animate-page-slow {
+        animation: rm-fade 900ms ease both;
+        will-change: opacity;
+      }
+
+      /* lightweight fade utility for small elements */
+      .animate-fade-in {
+        animation: rm-fade 360ms ease-out both;
+        will-change: opacity;
+      }
+
+      /* reduced motion support: prefer reduced motion disables animations */
+      @media (prefers-reduced-motion: reduce) {
+        .animate-page, .animate-page-slow, .animate-fade-in, .animate-card, .animate-card-rtl, .animate-row { animation: none !important; opacity: 1 !important; transform: none !important; }
+      }
+
+      /* Card stagger animation (per-item --i controls delay) */
+      @keyframes rm-card-in {
+        0% { opacity: 0; transform: translateY(6px) scale(.997); }
+        60% { opacity: 0.98; transform: translateY(1px) scale(1.001); }
+        100% { opacity: 1; transform: translateY(0) scale(1); }
+      }
+      /* default card entrance (vertical) */
+      .animate-card {
+        opacity: 0;
+        transform-origin: center;
+        animation: rm-card-in 640ms cubic-bezier(.22,.9,.28,1) both;
+        animation-delay: calc(var(--i, 0) * 70ms);
+        will-change: transform, opacity;
+        backface-visibility: hidden;
+      }
+      /* right-to-left card entrance for a stronger directional feel */
+      @keyframes rm-card-in-rtl {
+        0% { opacity: 0; transform: translateX(12px) translateZ(0) scale(.997); }
+        60% { opacity: 0.98; transform: translateX(4px) translateZ(0) scale(1.001); }
+        100% { opacity: 1; transform: translateX(0) translateZ(0) scale(1); }
+      }
+      .animate-card-rtl {
+        opacity: 0;
+        transform-origin: center;
+        animation: rm-card-in-rtl 640ms cubic-bezier(.22,.9,.28,1) both;
+        animation-delay: calc(var(--i, 0) * 70ms);
+        will-change: transform, opacity;
+        backface-visibility: hidden;
+      }
+
+      /* Row animation for tables (translate from right + fade + stagger) */
+      @keyframes rm-row-in {
+        0% { opacity: 0; transform: translateX(12px) translateZ(0); }
+        60% { opacity: 0.96; transform: translateX(4px) translateZ(0); }
+        100% { opacity: 1; transform: translateX(0) translateZ(0); }
+      }
+      .animate-row {
+        opacity: 0;
+        transform-origin: left center;
+        animation: rm-row-in 520ms cubic-bezier(.22,.9,.28,1) both;
+        animation-delay: calc(var(--i, 0) * 50ms);
+        will-change: transform, opacity;
+        backface-visibility: hidden;
+      }
+
+      /* subtle lift on hover for interactive cards */
+      .card-hover-lift:hover {
+        transform: translateY(-6px) scale(1.01);
+        box-shadow: 0 10px 30px rgba(2,6,23,0.12);
+        transition: transform 220ms cubic-bezier(.2,.8,.2,1), box-shadow 220ms ease;
+      }
     </style>
   </head>
   <body>

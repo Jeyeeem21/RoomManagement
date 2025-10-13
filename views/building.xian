@@ -1,7 +1,7 @@
 {{> head title=building.name }}
 {{> sidebar }}
 
-<main class="main-content min-h-screen p-8" style="background: linear-gradient(135deg, #e6f0ea 0%, var(--bg-light) 100%);">
+<main class="main-content min-h-screen p-8 animate-page" style="background: linear-gradient(135deg, #e6f0ea 0%, var(--bg-light) 100%);">
   <div class="max-w-7xl mx-auto">
 
     <!-- Header -->
@@ -80,7 +80,7 @@
         <h2 class="text-lg font-semibold text-[--primary] mb-4">Rooms</h2>
         <div class="grid grid-cols-1 gap-4" id="roomsList">
           {{#each rooms}}
-          <div class="border border-[--border] rounded-lg p-4">
+          <div class="border border-[--border] rounded-lg p-4 animate-card-rtl card-hover-lift" style="--i: {{@index}}">
             <h3 class="text-base font-medium text-[--primary]">{{this.name}} - {{this.type}}</h3>
             <p class="text-sm text-gray-600">Floor Unknown • {{this.type}} • Capacity: {{this.capacity}}</p>
           </div>
