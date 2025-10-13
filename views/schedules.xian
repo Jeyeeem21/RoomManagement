@@ -1,7 +1,7 @@
 {{> head title="Schedules"}}
 {{> sidebar active=active user=user}}
 
-<main class="main-content min-h-screen p-8 animate-page">
+<main class="main-content min-h-screen p-8">
   <div class="max-w-7xl mx-auto">
     <!-- Header -->
     <div class="mb-8">
@@ -79,6 +79,111 @@
           </table>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Add Schedule Modal -->
+  <div id="addModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden backdrop-blur-sm">
+    <div class="bg-white rounded-xl shadow-2xl w-11/12 md:w-2/3 lg:w-1/2 max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+        <h3 class="text-xl font-semibold text-gray-900">Add Schedule</h3>
+        <button id="closeAddModal" class="text-gray-400 hover:text-gray-600 transition-colors">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <form id="addScheduleForm" class="p-6 space-y-5">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Room</label>
+            <select id="room_id" name="room_id" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent" required>
+              <option value="">Select a room...</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Course</label>
+            <input name="course" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent" placeholder="e.g., CS101" required />
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Program</label>
+            <input name="program" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent" placeholder="e.g., Computer Science" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Year</label>
+            <input name="year" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent" placeholder="e.g., 3" />
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Section</label>
+            <input name="section" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent" placeholder="e.g., F2" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Unit</label>
+            <input name="unit" type="number" min="1" max="6" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent" placeholder="e.g., 3" />
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Faculty Name</label>
+            <input name="faculty_name" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent" placeholder="e.g., Prof. John Doe" required />
+          </div>
+          <div class="flex items-end">
+            <label class="inline-flex items-center gap-2 text-sm text-gray-700">
+              <input name="is_recurring" type="checkbox" class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500" />
+              Weekly Recurring
+            </label>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Start Date</label>
+            <input name="start_date" type="date" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent" required />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Last Date</label>
+            <input name="last_date" type="date" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent" required />
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Day of Week</label>
+            <select name="day_of_week" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent" required>
+              <option value="">Select day...</option>
+              <option value="Monday">Monday</option>
+              <option value="Tuesday">Tuesday</option>
+              <option value="Wednesday">Wednesday</option>
+              <option value="Thursday">Thursday</option>
+              <option value="Friday">Friday</option>
+              <option value="Saturday">Saturday</option>
+              <option value="Sunday">Sunday</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Start Time</label>
+            <input name="start_time" type="time" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent" required />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">End Time</label>
+            <input name="end_time" type="time" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent" required />
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Color</label>
+          <input name="color_code" type="color" value="#10B981" class="h-12 w-20 border border-gray-300 rounded-lg cursor-pointer" />
+        </div>
+        <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
+          <button type="button" id="cancelAdd" class="px-5 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium text-sm">
+            Cancel
+          </button>
+          <button type="submit" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium text-sm shadow-sm">
+            Save Schedule
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -514,34 +619,6 @@
               }
             }
           ],
-          drawCallback: function() {
-            // Update schedule count on each draw
-            try {
-              const count = this.api().data().length;
-              document.getElementById('scheduleCount').textContent = count;
-            } catch (error) {
-              console.error('Error updating schedule count:', error);
-              document.getElementById('scheduleCount').textContent = '0';
-            }
-
-            // Animate visible rows smoothly using RAF
-            const api = this.api();
-            const nodes = api.rows({ page: 'current' }).nodes();
-            const $rows = $(nodes);
-            $rows.removeClass('animate-row');
-            $rows.css('--i', null);
-
-            requestAnimationFrame(() => {
-              for (let i = 0; i < nodes.length; i++) {
-                nodes[i].style.setProperty('--i', i);
-              }
-              // Force reflow once
-              void nodes[0] && nodes[0].offsetWidth;
-              for (let i = 0; i < nodes.length; i++) {
-                nodes[i].classList.add('animate-row');
-              }
-            });
-          },
           order: [[0, 'asc']],
           pageLength: 10,
           lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
@@ -563,7 +640,17 @@
             processing: "Loading schedules..."
           },
           initComplete: function() {
-            // Initial schedule count
+            // Update schedule count
+            try {
+              const count = this.api().data().length;
+              document.getElementById('scheduleCount').textContent = count;
+            } catch (error) {
+              console.error('Error updating schedule count:', error);
+              document.getElementById('scheduleCount').textContent = '0';
+            }
+          },
+          drawCallback: function() {
+            // Update schedule count on each draw
             try {
               const count = this.api().data().length;
               document.getElementById('scheduleCount').textContent = count;
@@ -851,110 +938,4 @@ document.addEventListener('keydown', (event) => {
   <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
 
 </main>
-
-  <!-- Add Schedule Modal -->
-  <div id="addModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden backdrop-blur-sm">
-    <div class="bg-white rounded-xl shadow-2xl w-11/12 md:w-2/3 lg:w-1/2 max-w-2xl max-h-[90vh] overflow-y-auto">
-      <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-        <h3 class="text-xl font-semibold text-gray-900">Add Schedule</h3>
-        <button id="closeAddModal" class="text-gray-400 hover:text-gray-600 transition-colors">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-          </svg>
-        </button>
-      </div>
-      <form id="addScheduleForm" class="p-6 space-y-5">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1.5">Room</label>
-            <select id="room_id" name="room_id" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent" required>
-              <option value="">Select a room...</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1.5">Course</label>
-            <input name="course" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent" placeholder="e.g., CS101" required />
-          </div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1.5">Program</label>
-            <input name="program" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent" placeholder="e.g., Computer Science" />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1.5">Year</label>
-            <input name="year" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent" placeholder="e.g., 3" />
-          </div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1.5">Section</label>
-            <input name="section" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent" placeholder="e.g., F2" />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1.5">Unit</label>
-            <input name="unit" type="number" min="1" max="6" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent" placeholder="e.g., 3" />
-          </div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1.5">Faculty Name</label>
-            <input name="faculty_name" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent" placeholder="e.g., Prof. John Doe" required />
-          </div>
-          <div class="flex items-end">
-            <label class="inline-flex items-center gap-2 text-sm text-gray-700">
-              <input name="is_recurring" type="checkbox" class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500" />
-              Weekly Recurring
-            </label>
-          </div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1.5">Start Date</label>
-            <input name="start_date" type="date" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent" required />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1.5">Last Date</label>
-            <input name="last_date" type="date" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent" required />
-          </div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1.5">Day of Week</label>
-            <select name="day_of_week" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent" required>
-              <option value="">Select day...</option>
-              <option value="Monday">Monday</option>
-              <option value="Tuesday">Tuesday</option>
-              <option value="Wednesday">Wednesday</option>
-              <option value="Thursday">Thursday</option>
-              <option value="Friday">Friday</option>
-              <option value="Saturday">Saturday</option>
-              <option value="Sunday">Sunday</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1.5">Start Time</label>
-            <input name="start_time" type="time" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent" required />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1.5">End Time</label>
-            <input name="end_time" type="time" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent" required />
-          </div>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1.5">Color</label>
-          <input name="color_code" type="color" value="#10B981" class="h-12 w-20 border border-gray-300 rounded-lg cursor-pointer" />
-        </div>
-        <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
-          <button type="button" id="cancelAdd" class="px-5 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium text-sm">
-            Cancel
-          </button>
-          <button type="submit" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium text-sm shadow-sm">
-            Save Schedule
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
 {{> footer}}

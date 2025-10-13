@@ -118,6 +118,109 @@
           }
         });
       });
+      
+      // Global duplicate-submit guard for modal forms with auto-reset
+      // When any form is submitted, mark it as submitted and disable its submit buttons.
+      // If the submission doesn't complete (no AJAX success), the guard auto-resets after a timeout
+      // so the user can re-edit and resubmit.
+      (function () {
+        const DEFAULT_TIMEOUT = 2000; // ms
+
+        function restoreFormState(form) {
+          try { delete form.dataset.submitted; } catch (err) {}
+          if (form._submitTimer) {
+            clearTimeout(form._submitTimer);
+            delete form._submitTimer;
+          }
+          const submits = form.querySelectorAll('button[type="submit"], input[type="submit"]');
+          submits.forEach(btn => {
+            try { btn.disabled = false; } catch (err) {}
+            if (btn.tagName.toLowerCase() === 'button' && btn.dataset._origHtml) {
+              btn.innerHTML = btn.dataset._origHtml;
+              delete btn.dataset._origHtml;
+            }
+          });
+        }
+
+        // Expose a helper to clear submitted state from AJAX success handlers
+        // Usage: window.clearFormSubmitted(formElement) or pass a selector/id
+        window.clearFormSubmitted = function (formOrSelector) {
+          let form = null;
+          if (!formOrSelector) return;
+          if (typeof formOrSelector === 'string') {
+            form = document.querySelector(formOrSelector);
+          } else if (formOrSelector instanceof HTMLFormElement) {
+            form = formOrSelector;
+          } else if (formOrSelector && formOrSelector.closest) {
+            // maybe a button inside the form
+            form = formOrSelector.closest('form');
+          }
+          if (!form) return;
+          restoreFormState(form);
+        };
+
+        document.addEventListener('submit', function (e) {
+          const form = e.target;
+          if (!(form instanceof HTMLFormElement)) return;
+
+          // If already submitted, stop further processing
+          if (form.dataset.submitted === 'true') {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            return false;
+          }
+
+          // Mark as submitted and disable submit controls
+          form.dataset.submitted = 'true';
+          const submits = form.querySelectorAll('button[type="submit"], input[type="submit"]');
+          submits.forEach(btn => {
+            try { btn.disabled = true; } catch (err) {}
+            // store original label so we can restore later if needed
+            if (btn.tagName.toLowerCase() === 'button') {
+              btn.dataset._origHtml = btn.innerHTML;
+              btn.innerHTML = btn.dataset._submittingLabel || 'Saving...';
+            }
+          });
+
+          // Start/reset the auto-unlock timer
+          if (form._submitTimer) {
+            clearTimeout(form._submitTimer);
+            delete form._submitTimer;
+          }
+          const timeoutMs = parseInt(form.dataset.submitTimeout) || DEFAULT_TIMEOUT;
+          form._submitTimer = setTimeout(() => {
+            // only restore if still marked submitted
+            if (form.dataset.submitted === 'true') {
+              restoreFormState(form);
+            }
+          }, timeoutMs);
+
+          // Let other handlers (AJAX) run. We don't call preventDefault here.
+        }, true); // use capture so it runs before bubble handlers
+
+        // Clear submitted state when the form is reset (many modal close handlers call form.reset())
+        document.addEventListener('reset', function (e) {
+          const form = e.target;
+          if (!(form instanceof HTMLFormElement)) return;
+          restoreFormState(form);
+        }, true);
+
+        // Additionally clear submitted flag when modal is closed using common close/cancel buttons
+        document.addEventListener('click', function (e) {
+          const el = e.target;
+          if (!(el instanceof Element)) return;
+          // common ids/classes used for closing modals in this project
+          const closeSelectors = ['#closeAddModal', '#cancelAdd', '.modal-close', '.close-modal', '.btn-cancel'];
+          const shouldClose = closeSelectors.some(sel => el.closest(sel));
+          if (!shouldClose) return;
+          // find nearest modal container and clear any forms inside it
+          const modal = el.closest('.fixed') || el.closest('[id$="Modal"]');
+          if (!modal) return;
+          modal.querySelectorAll('form').forEach(form => {
+            restoreFormState(form);
+          });
+        });
+      })();
     </script>
 </body>
 </html>
