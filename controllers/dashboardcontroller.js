@@ -52,7 +52,7 @@ export const dashboardPage = async (req, res) => {
       attributes: [
         "id",
         "name",
-        [sequelize.fn("COALESCE", sequelize.fn("COUNT", sequelize.col("Rooms.id")), 0), "roomCount"],
+        [sequelize.fn("COALESCE", sequelize.fn("COUNT", sequelize.col("rooms.id")), 0), "roomCount"],
       ],
       include: [{ model: Room, attributes: [], required: false }],
       group: ["id", "name"],

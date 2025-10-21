@@ -402,15 +402,6 @@ document.addEventListener('keydown', (event) => {
     if (e.target === userModal) closeModal();
   });
 
-  // Helper: SHA-1 hex digest using Web Crypto
-  async function sha1Hex(message) {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(message);
-    const hashBuffer = await crypto.subtle.digest('SHA-1', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-  }
-
   document.getElementById('userForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const name = document.getElementById('name').value.trim();
@@ -431,13 +422,9 @@ document.addEventListener('keydown', (event) => {
     }
 
     try {
-      let passwordToSend = '';
-      if (rawPassword && rawPassword.length > 0) {
-        // Hash with SHA-1 as requested (note: SHA-1 is not recommended for modern security, but used per request)
-        passwordToSend = await sha1Hex(rawPassword);
-      }
-
-      const data = { name, email, role, status, password: passwordToSend };
+      // Send the raw password to the server; the server will hash it exactly once.
+      // This avoids double-hashing which prevented login for newly added users.
+      const data = { name, email, role, status, password: rawPassword };
 
       const response = await fetch(e.target.action, {
         method: 'POST',

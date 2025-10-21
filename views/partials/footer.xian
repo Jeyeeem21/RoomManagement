@@ -119,10 +119,7 @@
         });
       });
       
-      // Global duplicate-submit guard for modal forms with auto-reset
-      // When any form is submitted, mark it as submitted and disable its submit buttons.
-      // If the submission doesn't complete (no AJAX success), the guard auto-resets after a timeout
-      // so the user can re-edit and resubmit.
+     
       (function () {
         const DEFAULT_TIMEOUT = 2000; // ms
 

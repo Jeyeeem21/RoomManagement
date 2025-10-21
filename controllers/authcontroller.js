@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { User, sequelize } from "../models/userModel.js";
 import crypto from "crypto";
 await sequelize.sync();
@@ -131,11 +131,18 @@ export const loginUser = async (req, res) => {
 
 export const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
-  const hashed = await bcrypt.hash(password, 10);
-  const user = await User.create({ name, email, password: hashed });
+  const hashed = crypto.createHash("sha1").update(password).digest("hex");
+  const user = await User.create({
+    name,
+    email,
+    password: hashed,
+    role: "Administrator",
+    status: "active"
+  });
   req.session.userId = user.id;
   res.redirect("/dashboard");
 };
+
 
 export const logoutUser = (req, res) => {
   req.session.destroy();
