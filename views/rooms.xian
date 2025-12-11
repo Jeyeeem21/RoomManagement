@@ -14,19 +14,22 @@
     <div class="lg:col-span-2 bg-white rounded-lg border border-slate-200 overflow-hidden">
       <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
         <div class="font-semibold text-slate-900">Rooms</div>
-        <div class="flex items-center gap-3">
-          <input id="roomsSearch" type="text" placeholder="Search rooms" class="px-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent" />
-          <select id="roomsBuildingFilter" class="px-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
+        <!-- Make controls wrap and allow inputs to shrink on small screens so the Add button stays visible -->
+        <div class="flex items-center gap-3 flex-wrap min-w-0">
+          <input id="roomsSearch" type="text" placeholder="Search rooms" class="px-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent w-full sm:w-auto min-w-0 flex-1 sm:flex-none" />
+          <select id="roomsBuildingFilter" class="px-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent w-full sm:w-auto min-w-0">
             <option value="">All Buildings</option>
             {{#each buildings}}
               <option value="{{name}}">{{name}}</option>
             {{/each}}
           </select>
-          <button id="openRoomModal" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium">Add Room</button>
+          <!-- keep button above any overlays and prevent it from shrinking -->
+          <button id="openRoomModal" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium flex-shrink-0 z-20">Add Room</button>
         </div>
       </div>
+      <!-- allow horizontal scrolling for wide tables on small screens -->
       <div class="overflow-x-auto">
-        <table id="roomsTable" class="w-full text-left">
+        <table id="roomsTable" class="w-full text-left min-w-max">
           <thead class="bg-slate-50 border-b border-slate-200">
             <tr>
               <th class="px-6 py-3 text-xs font-medium text-slate-700 uppercase tracking-wider">Room Name</th>
